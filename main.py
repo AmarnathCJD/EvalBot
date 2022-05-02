@@ -10,56 +10,60 @@ async def ping(event):
 
 @command(pattern="eval")
 @auTH
-async def eval(e):
-    cmd = e.text.split(" ", 1)
-    if len(cmd) == 1:
-        await e.reply("No code provided")
-        return
-    cmd = cmd[1]
-    old_stderr = sys.stderr
-    old_stdout = sys.stdout
-    ros = sys.stdout = io.StringIO()
-    red = sys.stderr = io.StringIO()
-    stdout, stderr, exc = None, None, None
-    try:
-        await aexec(cmd, e)
-    except Exception:
-        exc = traceback.format_exc()
-    stdout = ros.getvalue()
-    stderr = red.getvalue()
-    sys.stdout = old_stdout
-    sys.stderr = old_stderr
-    if exc:
-        evaluation = exc
-    elif stderr:
-        evaluation = stderr
-    elif stdout:
-        evaluation = stdout
-    else:
-        evaluation = "Success"
-    final_output = (
-        "__►__ **EVALPy**\n```{}``` \n\n __►__ **OUTPUT**: \n```{}``` \n".format(
-            cmd,
-            evaluation,
-        )
-    )
-    if len(evaluation) > 4095:
-        with io.BytesIO(evaluation.encode()) as finale:
-            finale.name = "eval.txt"
-            return await e.reply(f"```{cmd}```", file=finale)
-    await e.reply(final_output)
+async def _eval(e):
+        cmd = e.text.split(" ", maxsplit=1)[1]
+        if e.reply_to:
+            await e.get_reply_message()
+        old_stderr = sys.stderr
+        old_stdout = sys.stdout
+        redirected_output = sys.stdout = io.StringIO()
+        redirected_error = sys.stderr = io.StringIO()
+        stdout, stderr, exc = None, None, None
+        try:
+            await aexec(cmd, e)
+        except Exception:
+            exc = traceback.format_exc()
+        stdout = redirected_output.getvalue()
+        stderr = redirected_error.getvalue()
+        sys.stdout = old_stdout
+        sys.stderr = old_stderr
+        evaluation = ""
+        if exc:
+            evaluation = exc
+        elif stderr:
+            evaluation = stderr
+        elif stdout:
+            evaluation = stdout
+        else:
+            evaluation = "Success"
+        final_output = "`{}`".format(evaluation)
+        MAX_MESSAGE_SIZE_LIMIT = 4095
+        if len(final_output) > MAX_MESSAGE_SIZE_LIMIT:
+            with io.BytesIO(str.encode(final_output)) as out_file:
+                out_file.name = "eval.text"
+                await e.client.send_file(
+                    e.chat_id,
+                    out_file,
+                    force_document=True,
+                    allow_cache=False,
+                    caption=cmd,
+                )
+        else:
+            await e.respond(final_output)
 
+async def aexec(code, smessatatus):
+    message = event = smessatatus
 
+    def p(_x):
+        return print(slitu.yaml_format(_x))
 
-async def aexec(code, event):
+    reply = await event.get_reply_message()
     exec(
-        f"async def __aexec(e, client): "
-        + "\n message = event = e"
-        + "\n reply = await event.get_reply_message()"
-        + "".join(f"\n {l}" for l in code.split("\n")),
+        "async def __aexec(message, reply, client, p): "
+        + "\n event = smessatatus = message"
+        + "".join(f"\n {l}" for l in code.split("\n"))
     )
-
-    return await locals()["__aexec"](event, event.client)
+    return await locals()["__aexec"](message, reply, message.client, p)
 
 
 @command(pattern="exec")
