@@ -1,4 +1,3 @@
-from cmath import log
 import importlib
 import requests
 import telethon
@@ -45,7 +44,7 @@ async def deval(e):
             evaluation,
         )
     )
-    if len(final_output) >= 4096:
+    if len(final_output) > 4090:
         final_output = evaluation
         with io.BytesIO(final_output.encode()) as out_file:
             out_file.name = "eval.txt"
