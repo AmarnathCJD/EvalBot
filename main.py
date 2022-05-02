@@ -1,6 +1,6 @@
 import telethon
 from config import AUTH, auTH, command, Master, bot
-import sys, io, traceback, asyncio
+import sys, io, traceback, asyncio, logging 
 
 
 @command(pattern="ping")
@@ -58,11 +58,12 @@ async def aexec(code, smessatatus):
         return print(slitu.yaml_format(_x))
 
     reply = await event.get_reply_message()
-    exec(
+    r = exec(
         "async def __aexec(message, reply, client, p): "
         + "\n event = smessatatus = message"
         + "".join(f"\n {l}" for l in code.split("\n"))
     )
+    logging.INFO(r)
     return await locals()["__aexec"](message, reply, message.client, p)
 
 
