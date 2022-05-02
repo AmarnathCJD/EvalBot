@@ -1,6 +1,11 @@
 import telethon
 from config import AUTH, auTH, command, Master, bot
-import sys, io, traceback, asyncio, logging 
+import sys
+import io
+import traceback
+import asyncio
+
+from database import auth_user, unauth_user
 
 
 @command(pattern="ping")
@@ -10,60 +15,26 @@ async def ping(event):
 
 @command(pattern="eval")
 @auTH
-async def _eval(e):
-        cmd = e.text.split(" ", maxsplit=1)[1]
-        if e.reply_to:
-            await e.get_reply_message()
-        old_stderr = sys.stderr
-        old_stdout = sys.stdout
-        redirected_output = sys.stdout = io.StringIO()
-        redirected_error = sys.stderr = io.StringIO()
-        stdout, stderr, exc = None, None, None
-        try:
-            await aexec(cmd, e)
-        except Exception:
-            exc = traceback.format_exc()
-        stdout = redirected_output.getvalue()
-        stderr = redirected_error.getvalue()
-        sys.stdout = old_stdout
-        sys.stderr = old_stderr
-        evaluation = ""
-        if exc:
-            evaluation = exc
-        elif stderr:
-            evaluation = stderr
-        elif stdout:
-            evaluation = stdout
-        else:
-            evaluation = "Success"
-        final_output = "`{}`".format(evaluation)
-        MAX_MESSAGE_SIZE_LIMIT = 4095
-        if len(final_output) > MAX_MESSAGE_SIZE_LIMIT:
-            with io.BytesIO(str.encode(final_output)) as out_file:
-                out_file.name = "eval.text"
-                await e.client.send_file(
-                    e.chat_id,
-                    out_file,
-                    force_document=True,
-                    allow_cache=False,
-                    caption=cmd,
-                )
-        else:
-            await e.respond(final_output)
+async def eval(e):
+    try:
+        cmd = e.text.split(" ", 1)[1]
+    except:
+        return await e.reply("No code specified")
+    try:
+        result = await aexec(cmd, e)
+    except Exception as ex:
+        result = ex
+    if result is None:
+        result = "No result"
+    await e.reply(result)
+
 
 async def aexec(code, event):
-
-    def p(_x):
-        return print(slitu.yaml_format(_x))
-
-    reply = await event.get_reply_message()
     exec(
-        "async def mf(event, reply, client, p): "
-        + "\n e = event"
-        + "".join(f"\n {l}" for l in code.split("\n"))
+        f'async def __aexec(event): ' +
+        ''.join(f'\n {l}' for l in code.split('\n'))
     )
-    logging.info(locals())
-    return await locals()["mf"](event, reply, event.client, p)
+    return await locals()['__aexec'](event)
 
 
 @command(pattern="exec")
@@ -93,7 +64,7 @@ async def auth(e):
     if not user:
         return
     await e.reply("user Added to Auth\n")
-    AUTH.append(user.id)
+    auth_user(user.id)
 
 
 @command(pattern="deauth")
@@ -103,7 +74,8 @@ async def deauth(e):
     if not user:
         return
     await e.reply("user Removed from Auth\n")
-    AUTH.remove(user.id)
+    unauth_user(user.id)
+
 
 async def get_user(e: telethon.events.NewMessage.Event):
     user: telethon.tl.types.User
@@ -124,9 +96,10 @@ async def get_user(e: telethon.events.NewMessage.Event):
         return
     return user
 
+
 @command(pattern="authlist")
 @auTH
 async def authlist(e):
-    await e.reply("\n".join(str(x) for x in AUTH))
+    await e.reply("**Auth List:**\n".join(str(x) for x in AUTH))
 
-bot.run_until_disconnected()    
+bot.run_until_disconnected()
