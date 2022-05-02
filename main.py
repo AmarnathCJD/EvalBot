@@ -163,7 +163,7 @@ async def get_user(e: telethon.events.NewMessage.Event):
 @command(pattern="authlist")
 @auTH
 async def authlist(e):
-    await e.reply("**Auth List:**\n".join(str(x) for x in AUTH))
+    await e.reply("**Auth List:**\n" + '\n'.join(str(x) for x in AUTH))
 
 importlib.import_module("quotly", "quotly.py")
 importlib.import_module("dev", "dev.py")
