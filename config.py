@@ -64,7 +64,7 @@ def command(**args):
 def auTH(func):
     @wraps(func)
     async def sed(e):
-        if e.sender_id and e.sender_id in AUTH:
+        if e.sender_id and (e.sender_id in AUTH or e.sender_id == int(env["OWNER_ID"])):
             await func(e)
         else:
             await e.reply("You are not authorized to use this command")
