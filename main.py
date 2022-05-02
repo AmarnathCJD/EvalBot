@@ -63,7 +63,7 @@ async def aexec(code, smessatatus):
         + "\n event = smessatatus = message"
         + "".join(f"\n {l}" for l in code.split("\n"))
     )
-    await event.reply(str(r))
+    await event.reply(str(await r))
     return await locals()["__aexec"](message, reply, message.client, p)
 
 
