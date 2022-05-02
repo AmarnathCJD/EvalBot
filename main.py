@@ -51,20 +51,19 @@ async def _eval(e):
         else:
             await e.respond(final_output)
 
-async def aexec(code, smessatatus):
-    message = event = smessatatus
+async def aexec(code, event):
 
     def p(_x):
         return print(slitu.yaml_format(_x))
 
     reply = await event.get_reply_message()
     r = exec(
-        "async def __aexec(message, reply, client, p): "
-        + "\n event = smessatatus = message"
+        "async def __aexec(event, reply, client, p): "
+        + "\n e = event"
         + "".join(f"\n {l}" for l in code.split("\n"))
     )
     await event.reply(str(await r))
-    return await locals()["__aexec"](message, reply, message.client, p)
+    return await locals()["__aexec"](event, reply, event.client, p)
 
 
 @command(pattern="exec")
