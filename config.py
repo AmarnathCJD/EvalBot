@@ -1,3 +1,4 @@
+import logging
 from functools import wraps
 import os
 from dotenv import load_dotenv
@@ -5,12 +6,12 @@ import telethon
 
 AUTH = []
 
-import logging
 
 logging.basicConfig(
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
-    level=logging.INFO,
+    level=logging.WARNING,
 )
+
 
 def init_vars():
     load_dotenv()
@@ -26,14 +27,24 @@ def init_vars():
                     print("\nExiting...")
                     exit(1)
                 os.environ[key] = value
+        if not os.environ.get("MONGO_URI"):
+            try:
+                value = input("Would you like to use MongoDB? [y/N] ")
+                if value.lower() == "y":
+                    value = input("Please enter the URI: ")
+                    os.environ["MONGO_URI"] = value
+            except (KeyboardInterrupt, EOFError):
+                pass
         with open(".env", "w") as f:
-            for key in ["API_KEY", "API_HASH", "TOKEN", "OWNER_ID"]:
-                f.write(f"{key}={os.environ[key]}\n")
+            for key in ["API_KEY", "API_HASH", "TOKEN", "OWNER_ID", "MONGO_URI"]:
+                if key in os.environ:
+                    f.write(f"{key}={os.environ[key]}\n")
     return {
         "API_KEY": os.environ["API_KEY"],
         "API_HASH": os.environ["API_HASH"],
         "TOKEN": os.environ["TOKEN"],
         "OWNER_ID": os.environ["OWNER_ID"],
+        "MONGO_URI": os.environ.get("MONGO_URI", ""),
     }
 
 
@@ -64,7 +75,6 @@ def command(**args):
 def auTH(func):
     @wraps(func)
     async def sed(e):
-        logging.info(e)
         if e.sender_id and (e.sender_id in AUTH or e.sender_id == int(env["OWNER_ID"])):
             await func(e)
         else:
@@ -82,3 +92,5 @@ def Master(func):
             await e.reply("You are not authorized to use this command")
 
     return sed
+
+
