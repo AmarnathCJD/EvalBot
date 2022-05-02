@@ -9,7 +9,7 @@ AUTH = []
 
 logging.basicConfig(
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
-    level=logging.WARNING,
+    level=logging.INFO,
 )
 
 
@@ -63,7 +63,7 @@ bot = init_bot()
 
 
 def command(**args):
-    args["pattern"] = "^(?i)[?/!]" + args["pattern"]
+    args["pattern"] = "^(?i)[?/!]" + args["pattern"] + "(?: |$|@ValerinaRobot)(.*)"
 
     def decorator(func):
         bot.add_event_handler(func, telethon.events.NewMessage(**args))

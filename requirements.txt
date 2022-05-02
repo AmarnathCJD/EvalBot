@@ -1,2 +1,6 @@
 telethon
 python-dotenv
+pymongo
+dnspython
+requests
+webcolors

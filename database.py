@@ -16,7 +16,7 @@ DB = init_db()
 
 
 def auth_user(user_id):
-    if DB:
+    if DB != None:
         DB.users.update_one({"user_id": user_id}, {
             "$set": {"auth": True}}, upsert=True)
     if user_id not in AUTH:
@@ -24,7 +24,7 @@ def auth_user(user_id):
 
 
 def unauth_user(user_id):
-    if DB:
+    if DB != None:
         DB.users.delete_one({"user_id": user_id})
     if user_id in AUTH:
         AUTH.remove(user_id)
@@ -37,7 +37,7 @@ def is_auth(user_id):
 
 
 def get_auth_users():
-    if DB:
+    if DB != None:
         return [user["user_id"] for user in DB.users.find({})]
     else:
         return AUTH

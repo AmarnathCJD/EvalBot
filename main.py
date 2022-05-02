@@ -1,9 +1,13 @@
+from cmath import log
+import importlib
+import requests
 import telethon
 from config import AUTH, auTH, command, Master, bot
 import sys
 import io
 import traceback
 import asyncio
+from pprint import pprint
 
 from database import auth_user, unauth_user
 
@@ -11,35 +15,94 @@ from database import auth_user, unauth_user
 @command(pattern="ping")
 async def ping(event):
     await event.reply("pong")
+    pprint("pong")
 
 
 @command(pattern="eval")
 @auTH
-async def eval(e):
+async def deval(e):
     try:
-        cmd = e.text.split(" ", 1)[1]
-    except:
-        return await e.reply("No code specified")
+        c = e.text.split(" ", 1)[1]
+    except IndexError:
+        return await e.reply("No code provided")
+    old_stderr = sys.stderr
+    old_stdout = sys.stdout
+    redirected_output = sys.stdout = io.StringIO()
+    redirected_error = sys.stderr = io.StringIO()
+    stdout, stderr, exc = None, None, None
     try:
-        result = await aexec(cmd, e)
-    except Exception as ex:
-        result = ex
-    if result is None:
-        result = "No result"
-    await e.reply(result)
+        value = await aexec(c, e)
+    except Exception:
+        exc = traceback.format_exc()
+    stdout = redirected_output.getvalue()
+    stderr = redirected_error.getvalue()
+    sys.stdout = old_stdout
+    sys.stderr = old_stderr
+    evaluation = exc or stderr or stdout or value or "No output"
+    final_output = (
+        "__►__ **EVALPy**\n```{}``` \n\n __►__ **OUTPUT**: \n```{}``` \n".format(
+            c,
+            evaluation,
+        )
+    )
+    if len(final_output) >= 4096:
+        final_output = evaluation
+        with io.BytesIO(final_output.encode()) as out_file:
+            out_file.name = "eval.txt"
+            await e.respond(file=out_file, caption=c)
+    await e.reply(final_output)
 
 
 async def aexec(code, event):
     exec(
-        f'async def __aexec(event): ' +
-        ''.join(f'\n {l}' for l in code.split('\n'))
+        (
+            "async def __aexec(e, client): "
+            + "\n p = print"
+            + "\n message = event = e"
+            + "\n reply = await event.get_reply_message()"
+            + "\n chat = event.chat_id"
+            + "\n pp = pprint"
+        )
+        + "".join(f"\n {l}" for l in code.split("\n"))
     )
-    return await locals()['__aexec'](event)
+    return await locals()["__aexec"](event, event.client)
+
+
+@command(pattern="goval")
+@auTH
+async def goval(e):
+    try:
+        cmd = e.text.split(maxsplit=1)[1]
+    except IndexError:
+        await e.reply("No cmd provided.")
+        return
+    endpoint = "https://go.dev/_/compile"
+    params = {"version": 2, "body": cmd, "withVet": True}
+    r = requests.post(endpoint, params=params)
+    resp = r.json()
+    result = {"out": "nil", "err": "nil"}
+    if resp.get("Events"):
+        result["out"] = resp["Events"][0]["Message"]
+    if resp.get("Errors"):
+        result["err"] = resp["Errors"]
+    if result["out"] != "nil":
+        evaluation = result["out"]
+    elif result["err"] != "nil":
+        evaluation = result["err"]
+    else:
+        evaluation = "nil"
+    final_output = (
+        "__►__ **EVALGo**\n```{}``` \n\n __►__ **OUTPUT**: \n```{}``` \n".format(
+            cmd,
+            evaluation,
+        )
+    )
+    await e.reply(final_output)
 
 
 @command(pattern="exec")
 @auTH
-async def exec(e):
+async def _exec(e):
     try:
         cmd = e.text.split(maxsplit=1)[1]
     except IndexError:
@@ -102,4 +165,5 @@ async def get_user(e: telethon.events.NewMessage.Event):
 async def authlist(e):
     await e.reply("**Auth List:**\n".join(str(x) for x in AUTH))
 
+importlib.import_module("quotly", "quotly.py")
 bot.run_until_disconnected()
