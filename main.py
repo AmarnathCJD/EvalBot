@@ -1,5 +1,5 @@
 import telethon
-from config import AUTH, auTH, command, Master
+from config import AUTH, auTH, command, Master, bot
 import sys, io, traceback, asyncio
 
 
@@ -124,3 +124,5 @@ async def get_user(e: telethon.events.NewMessage.Event):
 @auTH
 async def authlist(e):
     await e.reply("\n".join(str(x) for x in AUTH))
+
+bot.run_until_disconnected()    
