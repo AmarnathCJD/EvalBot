@@ -57,13 +57,12 @@ async def aexec(code, event):
         return print(slitu.yaml_format(_x))
 
     reply = await event.get_reply_message()
-    r = exec(
-        "async def __aexec(event, reply, client, p): "
+    exec(
+        "async def mf(event, reply, client, p): "
         + "\n e = event"
         + "".join(f"\n {l}" for l in code.split("\n"))
     )
-    await event.reply(str(await r))
-    return await locals()["__aexec"](event, reply, event.client, p)
+    return await locals()["mf"](event, reply, event.client, p)
 
 
 @command(pattern="exec")
