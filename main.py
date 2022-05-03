@@ -166,4 +166,5 @@ async def authlist(e):
 
 importlib.import_module("quotly", "quotly.py")
 importlib.import_module("dev", "dev.py")
+importlib.import_module("song", "song.py")
 bot.run_until_disconnected()
