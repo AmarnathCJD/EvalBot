@@ -4,7 +4,7 @@ import re
 
 pattern = r'"([^"]*)"'
 
-async def download_song(query: str) -> list[str]:
+async def download_song(query: str):
     out = await bash("spotdl '{}'".format(query))
     match = re.findall(pattern, out) if out != "" else []
     if len(match) == 0:
