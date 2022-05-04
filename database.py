@@ -3,7 +3,6 @@ from config import env, AUTH
 
 def init_db():
     if env.get("MONGO_URI"):
-        import pymongo
         from pymongo import MongoClient
         client = MongoClient(env["MONGO_URI"])
         db = client["bot"]
@@ -49,4 +48,3 @@ def __load_auth():
 
 
 __load_auth()
-

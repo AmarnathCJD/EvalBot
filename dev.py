@@ -13,7 +13,7 @@ async def update(e):
     os.system("git pull")
     await dd.edit("`Updates fetched, restarting ...`")
     os.system("python3 -m pip install -r requirements.txt")
-    
+
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 
