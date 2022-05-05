@@ -5,3 +5,4 @@ dnspython
 requests
 webcolors
 spotdl
+aria2p
