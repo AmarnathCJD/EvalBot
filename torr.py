@@ -84,7 +84,7 @@ async def check_progress_for_dl(gid, message, previous):
                         f"> Path:  `{t_file.name}`"
                     )
                 await message.edit(msg)
-            await sleep(8)
+            await sleep(4)
             await check_progress_for_dl(gid, message, previous)
         except Exception as e:
             if "not found" in str(e) or "'file'" in str(e):
@@ -136,7 +136,7 @@ async def torr(message):
             new_gid = await check_metadata(gid)
             await check_progress_for_dl(gid=new_gid, message=message, previous="")
     elif is_mag:
-        await sleep(15)
+        await sleep(5)
         new_gid = await check_metadata(gid)
         await check_progress_for_dl(gid=new_gid, message=message, previous="")
 
