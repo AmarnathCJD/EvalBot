@@ -55,6 +55,8 @@ async def check_progress_for_dl(gid, message, previous):
             if not complete and not t_file.error_message:
                 percentage = int(t_file.progress)
                 downloaded = percentage * int(t_file.total_length) / 100
+                if t_file.progress_string() == "100.00%":
+                    return await msg.edit("Download completed!, File saved to `{}`".format(t_file.name))
                 prog_str = f"** Downloading! @ {t_file.progress_string()}**"
                 if is_file is None:
                     info_msg = f"**Connections:**  `{t_file.connections}`\n"
