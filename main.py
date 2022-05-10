@@ -38,17 +38,16 @@ async def deval(e):
     sys.stdout = old_stdout
     sys.stderr = old_stderr
     evaluation = exc or stderr or stdout or value or "No output"
+    if len(evaluation) > 4095:
+        with io.BytesIO(evaluation.encode()) as finale:
+            finale.name = "eval.txt"
+            return await e.respond(f"`{c}`", file=finale)
     final_output = (
         "__►__ **EVALPy**\n```{}``` \n\n __►__ **OUTPUT**: \n```{}``` \n".format(
             c,
             evaluation,
         )
     )
-    if len(final_output) > 4090:
-        final_output = evaluation
-        with io.BytesIO(final_output.encode()) as out_file:
-            out_file.name = "eval.txt"
-            await e.respond(file=out_file, caption=c)
     await e.reply(final_output)
 
 
@@ -113,6 +112,7 @@ async def _exec(e):
     result = str(stdout.decode().strip()) + str(stderr.decode().strip())
     cresult = f"<code>Bash:~$</code> <code>{cmd}</code>\n<code>{result}</code>"
     if len(cresult) > 4095:
+        cresult = result
         with io.BytesIO(cresult.encode()) as finale:
             finale.name = "bash.txt"
             return await e.respond(f"`{cmd}`", file=finale)
