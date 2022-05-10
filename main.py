@@ -179,7 +179,8 @@ async def _send_http_request(e):
  else:
    Req = requests.get(Args)
  if Req.status_code != 200:
-   return await e.reply("**Error:** {}\n".format(Req.status_code))
+   err = requests.get("https://httpbin.org/status/"+str(Req.status_code))
+   return await e.reply("`{}`\n".format(err.text))
  if len(Req.text) > 4095:
    with io.BytesIO(Req.content) as f:
      f.name = "HTTP/2/1.txt"
