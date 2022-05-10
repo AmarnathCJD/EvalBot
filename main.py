@@ -164,6 +164,28 @@ async def get_user(e: telethon.events.NewMessage.Event):
 async def authlist(e):
     await e.reply("**Auth List:**\n" + '\n'.join(str(x) for x in AUTH))
 
+@command(pattern="req")
+async def _send_http_request(e):
+ try:
+   Args = e.text.split(None, maxsplit=1)[1]
+ except IndexError:
+   return await e.reply("No url was found!")
+ Post = False
+ if "-p" in Args:
+   Args = Args.replace("-p", "", 1)
+   Post = True
+ if Post:
+   Req = requests.post(Args)
+ else:
+   Req = requests.get(Args)
+ if Req.status_code != 200:
+   return await e.reply("**Error:** {}\n".format(Req.status_code))
+ if len(Req.text) > 4095:
+   with io.BytesIO(Req.content) as f:
+     f.name = "HTTP/2/1.txt"
+     return await e.reply(f"`{Args}`", file=f)
+ await e.reply(str(Req.text))
+
 importlib.import_module("quotly", "quotly.py")
 importlib.import_module("dev", "dev.py")
 importlib.import_module("song", "song.py")
