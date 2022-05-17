@@ -38,10 +38,10 @@ async def deval(e):
     sys.stdout = old_stdout
     sys.stderr = old_stderr
     evaluation = exc or stderr or stdout or value or "No output"
-    if len(evaluation) > 4095:
-        with io.BytesIO(evaluation.encode()) as finale:
-            finale.name = "eval.txt"
-            return await e.respond(f"`{c}`", file=finale)
+    if len(str(evaluation)) > 4094:
+        with io.BytesIO(str(evaluation).encode()) as file:
+            file.name = "eval.txt"
+            return await e.respond(file=file)
     final_output = (
         "__►__ **EVALPy**\n```{}``` \n\n __►__ **OUTPUT**: \n```{}``` \n".format(
             c,
