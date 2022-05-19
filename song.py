@@ -3,6 +3,7 @@ from dev import bash
 from urllib.parse import quote
 import requests 
 import re
+from telethon import Button
 
 pattern = r'"([^"]*)"'
 
@@ -41,9 +42,9 @@ async def _stream_platforma(e):
   r = r.json()
  except:
   return await e.reply("ErrorJsonDecoder.")
- src = "**Streaming sites for __{}__:**".format(q)
- s = 0
+ src = "Streaming sites for **{}**:".format(q)
+ buttons = []
  for x in r["data"]:
    s += 1
-   src += "{}. [{}]({}) - **{}**".format(s, x.get("name"), x.get("url"), x.get("quality"))
- await e.reply(src)
+   buttons.append(Button.url(x.get("name") + " -" + x.get("quality"), x.get("url")))
+ await e.reply(src, buttons=buttons)
