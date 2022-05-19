@@ -45,6 +45,8 @@ async def _stream_platforma(e):
  src = "Streaming sites for **{}**:".format(q)
  buttons = []
  s = 0
+ if not r["data"]:
+  return await e.reply(src+"\nNot available on any OTT.")
  for x in r["data"]:
    s += 1
    p = (f'({x.get("price")})' if "stream" not in x.get("price") else "") if x.get("price") else ""
