@@ -44,6 +44,7 @@ async def _stream_platforma(e):
   return await e.reply("ErrorJsonDecoder.")
  src = "Streaming sites for **{}**:".format(q)
  buttons = []
+ s = 0
  for x in r["data"]:
    s += 1
    buttons.append(Button.url(x.get("name") + " -" + x.get("quality"), x.get("url")))
