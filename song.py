@@ -47,5 +47,6 @@ async def _stream_platforma(e):
  s = 0
  for x in r["data"]:
    s += 1
-   buttons.append([Button.url(x.get("name") + " -" + x.get("quality"), x.get("url"))])
+   p = x.get("price") if "stream" not in x.get("price") else ""
+   buttons.append([Button.url(x.get("name") + " -" + x.get("quality") + "(" + p + ")", x.get("url"))])
  await e.reply(src, buttons=buttons)
