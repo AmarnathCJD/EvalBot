@@ -1,5 +1,7 @@
 from config import command
 from dev import bash
+from urllib.parse import quote
+import requests 
 import re
 
 pattern = r'"([^"]*)"'
@@ -27,3 +29,21 @@ async def dl_song(e):
             await e.respond(file=resp)
         except BaseException as errr:
             await e.reply(str(errr))
+
+@command(pattern="stream")
+async def _stream_platforma(e):
+ try:
+        q = e.text.split(None, maxsplit=1)[1]
+ except IndexError:
+        return await e.reply("No query given!")
+ r = requests.get("https://api.roseloverx.tk/stream?q={}".format(quote(q)))
+ try:
+  r = r.json()
+ except:
+  return await e.reply("ErrorJsonDecoder.")
+ src = "**Streaming sites for __{}__:**".format(q)
+ s = 0
+ for x in r["data"]:
+   s += 1
+   src += "{}. [{}]({}) - **{}**".format(s, x.get("name"), x.get("url"), x.get("quality"))
+ await e.reply(src)
