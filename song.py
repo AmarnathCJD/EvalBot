@@ -47,5 +47,5 @@ async def _stream_platforma(e):
  s = 0
  for x in r["data"]:
    s += 1
-   buttons.append(Button.url(x.get("name") + " -" + x.get("quality"), x.get("url")))
+   buttons.append([Button.url(x.get("name") + " -" + x.get("quality"), x.get("url"))])
  await e.reply(src, buttons=buttons)
