@@ -89,8 +89,7 @@ async def _mdisk(e):
  _data = f'**FileName:** {filename}'
  _data += f'\n**Size:** {size}' if size != '0B' else ""
  _data += f'\n**Duration:** {strf_du}' if duration != 0 else ""
- _data += f'\n**Mdisk URL:** {_url}'
- buttons = [Button.url('Direct URL', src)]
- await e.reply(_data, buttons=buttons)
+ _data += f'\n**Mdisk URL:** ```{_url}```'
+ await e.reply(_data)
      
      
