@@ -3,6 +3,7 @@ from dev import bash
 from urllib.parse import quote
 import requests 
 import re
+import time
 from telethon import Button
 import datetime 
 
@@ -92,4 +93,15 @@ async def _mdisk(e):
  _data += f'\n**Mdisk URL:** ```{_url}```'
  await e.reply(_data)
      
-     
+@command(pattern='compress')
+async def _compress_vid(e):
+ v = await e.get_reply_message()
+ if not v or v.video == None:
+    await e.reply('No video provided!')
+    return
+ vd = await v.download_media()
+ t = time.time()
+ cmd = f'ffmpeg -i {vd} -c:v libx265 -vtag hvc1 compressed-{vd}'
+ r = await bash(cmd)
+ await e.reply('Time: ' + str(time.time() - t) + f'\nFile: compressed-{vd}')
+
