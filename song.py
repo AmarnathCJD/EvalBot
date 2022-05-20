@@ -71,7 +71,7 @@ async def _mdisk(e):
    return await e.reply("Failed to find MediaID.")
  url = url[-1]
  base_url = "https://diskuploader.entertainvideo.com/v1/file/cdnurl?param=" + url
- r = get(base_url)
+ r = requests.get(base_url)
  try:
      try:
          r = r.json()
