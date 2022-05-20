@@ -103,5 +103,7 @@ async def _compress_vid(e):
  t = time.time()
  cmd = f'ffmpeg -i {vd} -c:v libx265 -vtag hvc1 compressed-{vd}'
  r = await bash(cmd)
- await e.reply('Time: ' + str(time.time() - t) + f'\nFile: compressed-{vd}')
+ _f= await e.respond(file='compressed' + vd)
+ comp_size = sizeof_fmt(_f.file.size)
+ await e.reply('Time: ' + str(time.time() - t) + f's\nFileName: `compressed-{vd}`' + f'\n**{sizeof_fmt(v.file.size)}** --> **{comp_size}**')
 
