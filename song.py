@@ -6,6 +6,10 @@ import re
 import time
 from telethon import Button
 import datetime 
+from mega import Mega
+
+_mega = Mega()
+mega = _mega.login()
 
 pattern = r'"([^"]*)"'
 
@@ -107,3 +111,27 @@ async def _compress_vid(e):
  comp_size = sizeof_fmt(_f.file.size)
  await e.reply('Time: ' + str(time.time() - t) + f's\nFileName: `compressed-{vd}`' + f'\n**{sizeof_fmt(v.file.size)}** --> **{comp_size}**')
 
+@command(pattern='upload')
+async def _upload_to_meganz(e):
+ try:
+   if e.reply_to:
+      _f = await e.get_reply_message()
+      _file = await _f.download_media()
+      _type = 'file'
+  else:
+      try:
+        _f = e.text.split(None, maxsplit=1)[1]
+      except IndexError:
+        return await e.reply('Reply to a file/ url.')
+      _file = _f
+      _type = 'url'
+ if _type == 'file':
+   file = mega.upload(_file)
+   _link = mega.get_upload_link(file)
+ else:
+   _link = 'soon!'
+ _disk = mega.get_storage_space(giga=True)
+ _result = 'Uploaded To Mega.NZ'
+ _result += 'URL: {}'.format(_link)
+ _result += 'DiskSpace: {}/20GB'.format(_disk)
+ await e.reply(_result)
