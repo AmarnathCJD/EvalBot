@@ -113,12 +113,11 @@ async def _compress_vid(e):
 
 @command(pattern='upload')
 async def _upload_to_meganz(e):
- try:
-   if e.reply_to:
+ if e.reply_to:
       _f = await e.get_reply_message()
       _file = await _f.download_media()
       _type = 'file'
-  else:
+ else:
       try:
         _f = e.text.split(None, maxsplit=1)[1]
       except IndexError:
