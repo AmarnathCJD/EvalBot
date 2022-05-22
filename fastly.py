@@ -4,6 +4,7 @@ from requests import post
 from dotenv import load_dotenv
 import os
 import logging
+import time
 
 logging.basicConfig(
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
@@ -14,7 +15,7 @@ load_dotenv()
 STRING = os.getenv('STRING')
 API_KEY = os.getenv('API_KEY')
 API_HASH = os.getenv('API_HASH')
-OCR_API_KEY = os.getenv('OCR_KEY')
+OCR_API_KEY = os.getenv('OCR_API_KEY')
 
 OCR_URL = 'https://api.api-ninjas.com/v1/imagetotext'
 HEADERS = {'X-Api-Key': OCR_API_KEY}
@@ -34,8 +35,9 @@ async def _fastly(e):
  await e.respond(str(_text))
  os.remove('ocr.jpg')
 
-@c.on(events.NewMessage(pattern='ocr'))
+@c.on(events.NewMessage(pattern='.ocr', outgoing=True))
 async def _f(e):
+ a = time.time()
  r = await e.get_reply_message()
  if not r or not r.photo:
     return
@@ -44,7 +46,7 @@ async def _f(e):
  data = _req.json()
  logging.info(data)
  _text = data[0]['text']
- await e.respond(str(_text))
+ await e.respond(str(_text) + 'Time: {}'.format(time.time() - a))
  os.remove('ocr.jpg')
  
 c.run_until_disconnected()
