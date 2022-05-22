@@ -3,6 +3,12 @@ from telethon.sessions import StringSession
 from requests import post
 from dotenv import load_dotenv
 import os
+import logging
+
+logging.basicConfig(
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
+    level=logging.INFO,
+)
 
 load_dotenv()
 STRING = os.getenv('STRING')
