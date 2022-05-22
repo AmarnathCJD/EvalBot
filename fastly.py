@@ -33,5 +33,18 @@ async def _fastly(e):
  _text = data[0]['text']
  await e.respond(str(_text))
  os.remove('ocr.jpg')
+
+@c.on(events.NewMessage(pattern='ocr'))
+async def _f(e):
+ r = await e.get_reply_message()
+ if not r or not r.photo:
+    return
+ p = await r.download_media('ocr.jpg')
+ _req = post(OCR_URL, headers=HEADERS, files={'image': open(p, 'rb')})
+ data = _req.json()
+ logging.info(data)
+ _text = data[0]['text']
+ await e.respond(str(_text))
+ os.remove('ocr.jpg')
  
 c.run_until_disconnected()
