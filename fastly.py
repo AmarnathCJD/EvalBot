@@ -29,6 +29,7 @@ async def _fastly(e):
  p = await e.download_media('ocr.jpg')
  _req = post(OCR_URL, headers=HEADERS, files={'image': open(p, 'rb')})
  data = _req.json()
+ logging.info(data)
  _text = data[0]['text']
  await e.respond(str(_text))
  os.remove('ocr.jpg')
