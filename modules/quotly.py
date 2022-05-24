@@ -232,7 +232,7 @@ def get_entites(x):
     return q
 
 
-@command(pattern="^/qrate(?: |$|@MissMieko_Bot)(.*)")
+@command(pattern="qrate")
 async def e_q_rating(e):
     if e.is_private:
         return await e.reply("This command is made to be used in group chats.")
@@ -330,7 +330,7 @@ async def quotly_downvote(e):
     )
 
 
-command(pattern="qtop")
+@command(pattern="qtop")
 async def qtop_q(e):
     await e.reply(
         "**Top group quotes:**",
