@@ -192,7 +192,7 @@ async def _quotly_api_(e):
         fq = req.json()["result"]["image"]
         with io.BytesIO(base64.b64decode((bytes(fq, "utf-8")))) as f:
             f.name = "sticker.png" if photo else "sticker.webp"
-            qs = await e.respond(file=f, buttons=None, force_document=photo, buttons=buttons)
+            qs = await e.respond(file=f, force_document=photo, buttons=buttons)
             add_quote(
                 e.chat_id,
                 [
