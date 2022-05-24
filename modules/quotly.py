@@ -1,10 +1,14 @@
 import base64
 import io
+from ._db import get_qrate, set_qrate, get_quotes, add_quote
 
+import random
 from requests import post
-from telethon import types
-from config import command
+from telethon import types, Button
+from .helpers import Callback, HasRight, InlineQuery, command, getSender
 from webcolors import hex_to_name, name_to_hex
+
+qr = {}
 
 
 @command(pattern="(q|quote)")
@@ -176,11 +180,27 @@ async def _quotly_api_(e):
         headers={"Content-type": "application/json"},
         json=post_data,
     )
+    if get_qrate(e.chat_id):
+        cd = str(e.id) + "|" + str(0) + "|" + str(0)
+        buttons = buttons = Button.inline("👍", data=f"upq_{cd}"), Button.inline(
+            "👎", data=f"doq_{cd}"
+        )
+        qr[e.id] = [[], []]
+    else:
+        buttons = None
     try:
         fq = req.json()["result"]["image"]
         with io.BytesIO(base64.b64decode((bytes(fq, "utf-8")))) as f:
             f.name = "sticker.png" if photo else "sticker.webp"
-            qs = await e.respond(file=f, buttons=None, force_document=photo)
+            qs = await e.respond(file=f, buttons=None, force_document=photo, buttons=buttons)
+            add_quote(
+                e.chat_id,
+                [
+                    qs.media.document.id,
+                    qs.media.document.access_hash,
+                    qs.media.document.file_reference,
+                ],
+            )
     except Exception as ep:
         await e.reply("error: " + str(ep))
 
@@ -211,4 +231,165 @@ def get_entites(x):
         q.append({"type": type, "offset": y.offset, "length": y.length})
     return q
 
-# qtop, qrate, qrand removed
+
+@command(pattern="^/qrate(?: |$|@MissMieko_Bot)(.*)")
+async def e_q_rating(e):
+    if e.is_private:
+        return await e.reply("This command is made to be used in group chats.")
+    if not e.from_id:
+        return
+    if not await HasRight(e.chat_id, await getSender(e), "change_info"):
+        return
+    try:
+        d = e.text.split(maxsplit=1)[1]
+    except IndexError:
+        if get_qrate(e.chat_id):
+            await e.reply("Quotes rating is on.")
+        else:
+            await e.reply("Rating for quotes is off.")
+        return
+    if d in ["True", "yes", "on", "y"]:
+        await e.reply("Quotes rating has been turned on.")
+        set_qrate(e.chat_id, True)
+    elif d in ["False", "no", "off", "n"]:
+        await e.reply("Rating for quotes has been turned off.")
+        set_qrate(e.chat_id, False)
+    else:
+        await e.reply("Your input was not recognised as one of: yes/no/on/off")
+
+
+@Callback(pattern="upq_(.*)")
+async def quotly_upvote(e):
+    d = e.pattern_match.group(1).decode()
+    x, y, z = d.split("|")
+    x, y, z = int(x), int(y), int(z)
+    try:
+        ya = qr[x]
+    except IndexError:
+        await e.edit(buttons=None)
+    if e.sender_id in ya[0]:
+        y -= 1
+        qr[x][0].remove(e.sender_id)
+        await e.answer("you got your vote back")
+    elif e.sender_id in ya[1]:
+        y += 1
+        z -= 1
+        qr[x][1].remove(e.sender_id)
+        qr[x][0].append(e.sender_id)
+        await e.answer("you 👍 this")
+    elif e.sender_id not in ya[0]:
+        y += 1
+        qr[x][0].append(e.sender_id)
+        await e.answer("you 👍 this")
+    cd = "{}|{}|{}".format(x, y, z)
+    if y == 0:
+        y = ""
+    if z == 0:
+        z = ""
+    await e.edit(
+        buttons=[
+            Button.inline(f"👍 {y}", data=f"upq_{cd}"),
+            Button.inline(f"👎 {z}", data=f"doq_{cd}"),
+        ]
+    )
+
+
+@Callback(pattern="doq_(.*)")
+async def quotly_downvote(e):
+    d = e.pattern_match.group(1).decode()
+    x, y, z = d.split("|")
+    x, y, z = int(x), int(y), int(z)
+    try:
+        ya = qr[x]
+    except IndexError:
+        await e.edit(buttons=None)
+    if e.sender_id in ya[1]:
+        z -= 1
+        qr[x][1].remove(e.sender_id)
+        await e.answer("you got your vote back")
+    elif e.sender_id in ya[0]:
+        z += 1
+        y -= 1
+        qr[x][0].remove(e.sender_id)
+        qr[x][1].append(e.sender_id)
+        await e.answer("you 👎 this")
+    elif e.sender_id not in ya[1]:
+        z += 1
+        qr[x][1].append(e.sender_id)
+        await e.answer("you 👎 this")
+    cd = "{}|{}|{}".format(x, y, z)
+    if y == 0:
+        y = ""
+    if z == 0:
+        z = ""
+    await e.edit(
+        buttons=[
+            Button.inline(f"👍 {y}", data=f"upq_{cd}"),
+            Button.inline(f"👎 {z}", data=f"doq_{cd}"),
+        ]
+    )
+
+
+command(pattern="qtop")
+async def qtop_q(e):
+    await e.reply(
+        "**Top group quotes:**",
+        buttons=Button.switch_inline(
+            "Open top", "top:{}".format(e.chat_id), same_peer=True
+        ),
+    )
+
+
+@InlineQuery(pattern="top:(.*)")
+async def qtop_cb_(e):
+    x = e.pattern_match.group(1)
+    q = get_quotes(int(x))
+    if not q:
+        return
+    c = []
+    xe = False
+    n = 0
+    if get_qrate(e.chat_id):
+        qr[e.id] = [[], []]
+        cd = str(e.id) + "|" + str(0) + "|" + str(0)
+        xe = True
+    for _x in q:
+        n += 1
+        c.append(
+            await e.builder.document(
+                title=str(n),
+                description=str(n),
+                text=str(n),
+                file=types.InputDocument(
+                    id=_x[0], access_hash=_x[1], file_reference=_x[2]
+                ),
+                buttons=[
+                    Button.inline("👍", data=f"upq_{cd}"),
+                    Button.inline("👎", data=f"doq_{cd}"),
+                ]
+                if xe
+                else None,
+            )
+        )
+    await e.answer(c, gallery=True)
+
+
+@command(pattern="qrand")
+async def qrand_s_(e):
+    q = get_quotes(e.chat_id)
+    if not q:
+        return
+    c, xe = random.choice(q), False
+    if get_qrate(e.chat_id):
+        qr[e.id] = [[], []]
+        cd = str(e.id) + "|" + str(0) + "|" + str(0)
+        xe = True
+    await e.reply(
+        file=types.InputDocument(c[0], c[1], c[2]),
+        buttons=[
+            Button.inline("👍", data=f"upq_{cd}"),
+            Button.inline("👎", data=f"doq_{cd}"),
+        ]
+        if xe
+        else None,
+    )
