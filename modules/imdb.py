@@ -1,8 +1,5 @@
-from ast import pattern
-import pprint
-from turtle import title
-from unicodedata import name
-from click import command
+import random
+from .helpers import command
 from requests import get
 from bs4 import BeautifulSoup
 
@@ -126,7 +123,7 @@ def get_crew_cast_info(soup):
     if aka_:
         aka = aka_.find(
             "a", class_="ipc-metadata-list-item__list-content-item").text
-    return cast, creators, story, language, release_date, country, aka, user_review
+    return {'cast': cast, 'creators': creators, 'user_review': user_review, 'story': story, 'language': language, 'release_date': release_date, 'country': country, 'aka': aka}
 
 
 @command(pattern="imdb")
@@ -146,6 +143,25 @@ async def imdb(e):
     release_date = movie_info['details']['release_date']
     story = movie_info['details']['story']
     rating = movie_info['rating']
-    
-    
-
+    cast = ''.join(
+        f"{x['name']} as {x['charector']}\n" for x in movie_info['details']['cast'])
+    creators = ''.join(f"{x}\n" for x in movie_info['details']['creators'])
+    user_review = movie_info['details']['user_review']
+    language = movie_info['details']['language']
+    country = movie_info['details']['country']
+    aka = movie_info['details']['aka']
+    poster = random.choice(movie_info['images'])['url']
+    MOVIE = f"""
+**Title** : `{title}`
+**Release Date** : `{release_date}`
+**Rating** : `{rating}`
+**Language** : `{language}`
+**Country** : `{country}`
+**Aka** : `{aka}`
+**Creators** : `{creators}`
+**Cast** :
+{cast}
+**Story** :
+{story}
+"""
+    await i.edit(MOVIE, file=poster)
