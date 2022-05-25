@@ -192,7 +192,7 @@ async def _quotly_api_(e):
         fq = req.json()["result"]["image"]
         with io.BytesIO(base64.b64decode((bytes(fq, "utf-8")))) as f:
             f.name = "sticker.png" if photo else "sticker.webp"
-            qs = await e.respond(file=f, buttons=None, force_document=photo, buttons=buttons)
+            qs = await e.respond(file=f, force_document=photo, buttons=buttons)
             add_quote(
                 e.chat_id,
                 [
@@ -232,7 +232,7 @@ def get_entites(x):
     return q
 
 
-@command(pattern="^/qrate(?: |$|@MissMieko_Bot)(.*)")
+@command(pattern="qrate")
 async def e_q_rating(e):
     if e.is_private:
         return await e.reply("This command is made to be used in group chats.")
@@ -330,7 +330,7 @@ async def quotly_downvote(e):
     )
 
 
-command(pattern="qtop")
+@command(pattern="qtop")
 async def qtop_q(e):
     await e.reply(
         "**Top group quotes:**",

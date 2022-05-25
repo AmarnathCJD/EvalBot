@@ -51,7 +51,7 @@ def set_qrate(chat_id, mode: bool):
 def get_qrate(chat_id):
     q = quotly.find_one({"chat_id": chat_id})
     if q:
-        return q["qrate"]
+        return q.get('qrate') or False
     return False
 
 def add_quote(chat_id, quote):
