@@ -1,12 +1,14 @@
 import os
-from .helpers import command, sizeof_fmt, bash
-import telethon
 import time
-import yt_dlp
 from urllib.parse import quote
+
 import requests
+import telethon
+import yt_dlp
 from telethon.tl.types import DocumentAttributeAudio, DocumentAttributeVideo
 from youtubesearchpython import VideosSearch as vs
+
+from .helpers import bash, command, sizeof_fmt
 
 aud_ops = {
     "format": "bestaudio",
@@ -55,8 +57,7 @@ async def download_song(e):
             v.get("title"), v.get("channel").get("name") or "Channel"
         )
     )
-    duration = int(v["duration"].split(":")[0]) * 60 + \
-        int(v["duration"].split(":")[1])
+    duration = int(v["duration"].split(":")[0]) * 60 + int(v["duration"].split(":")[1])
     if duration > 3600:
         await axe.edit("Upload failed song duration is more than 1 hour(s)!")
     with yt_dlp.YoutubeDL(aud_ops) as yt:
@@ -99,8 +100,7 @@ async def download_video(e):
             v.get("title"), v.get("channel").get("name") or "Channel"
         )
     )
-    duration = int(v["duration"].split(":")[0]) * 60 + \
-        int(v["duration"].split(":")[1])
+    duration = int(v["duration"].split(":")[0]) * 60 + int(v["duration"].split(":")[1])
     if duration > 3600:
         await axe.edit("Upload failed video duration is more than 1 hour(s)!")
     with yt_dlp.YoutubeDL(vid_ops) as yt:
@@ -114,8 +114,7 @@ async def download_video(e):
             v["id"] + ".mp4",
             supports_streaming=True,
             caption=v["title"],
-            attributes=[DocumentAttributeVideo(
-                duration=duration, w=854, h=480)],
+            attributes=[DocumentAttributeVideo(duration=duration, w=854, h=480)],
         )
     await axe.delete()
     os.remove(v["id"] + ".mp4")
@@ -136,26 +135,34 @@ async def _stream_platforma(e):
     buttons = []
     s = 0
     if not r["data"]:
-        return await e.reply(src+"\nNot available on any OTT.")
+        return await e.reply(src + "\nNot available on any OTT.")
     for x in r["data"]:
         s += 1
-        p = (f'({x.get("price")})' if "stream" not in x.get(
-            "price") else "") if x.get("price") else ""
+        p = (
+            (f'({x.get("price")})' if "stream" not in x.get("price") else "")
+            if x.get("price")
+            else ""
+        )
         buttons.append([telethon.Button.url(x.get("name") + p, x.get("url"))])
     await e.reply(src, buttons=buttons)
 
 
-@command(pattern='compress')
+@command(pattern="compress")
 async def _compress_vid(e):
     v = await e.get_reply_message()
     if not v or v.video == None:
-        await e.reply('`No video found to compress!`\nConverts video To h265 codec')
+        await e.reply("`No video found to compress!`\nConverts video To h265 codec")
         return
     vd = await v.download_media()
     t = time.time()
-    cmd = f'ffmpeg -i {vd} -c:v libx265 -vtag hvc1 compressed-{vd}'
+    cmd = f"ffmpeg -i {vd} -c:v libx265 -vtag hvc1 compressed-{vd}"
     await bash(cmd)
-    size = os.stat(f'compressed-{vd}').st_size
+    size = os.stat(f"compressed-{vd}").st_size
     comp_size = sizeof_fmt(size)
-    await e.respond('Time: ' + str(time.time() - t) + f's\nFileName: `compressed-{vd}`' + f'\n**{sizeof_fmt(v.file.size)}** --> **{comp_size}**', file='compressed-' + vd)
-    
+    await e.respond(
+        "Time: "
+        + str(time.time() - t)
+        + f"s\nFileName: `compressed-{vd}`"
+        + f"\n**{sizeof_fmt(v.file.size)}** --> **{comp_size}**",
+        file="compressed-" + vd,
+    )

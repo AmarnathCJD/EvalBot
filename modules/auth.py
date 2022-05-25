@@ -1,6 +1,6 @@
-from ._db import unauth_user, auth_user, AUTH
-from .helpers import command, get_user
 from ._config import OWNER_ID
+from ._db import AUTH, auth_user, unauth_user
+from .helpers import command, get_user
 
 
 @command(pattern="auth|deauth|authlist")
@@ -18,7 +18,7 @@ async def _auth(e):
         await e.reply("You can't auth yourself")
         return
     if e.text.split()[0][1:] == "authlist":
-        await e.reply("**Auth List:**\n" + '\n'.join(str(x) for x in AUTH))
+        await e.reply("**Auth List:**\n" + "\n".join(str(x) for x in AUTH))
         return
     if user.id in AUTH:
         unauth_user(user.id)

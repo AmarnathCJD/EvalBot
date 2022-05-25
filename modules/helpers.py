@@ -1,13 +1,14 @@
-from functools import wraps
-import telethon
-from ._config import bot, OWNER_ID
-from ._db import AUTH
 import asyncio
+from functools import wraps
+
+import telethon
+
+from ._config import OWNER_ID, bot
+from ._db import AUTH
 
 
 def command(**args):
-    args["pattern"] = "^(?i)[?/!]" + args["pattern"] + \
-        "(?: |$|@ValerinaRobot)(.*)"
+    args["pattern"] = "^(?i)[?/!]" + args["pattern"] + "(?: |$|@ValerinaRobot)(.*)"
 
     def decorator(func):
         bot.add_event_handler(func, telethon.events.NewMessage(**args))
@@ -23,12 +24,14 @@ def InlineQuery(**args):
 
     return decorator
 
+
 def Callback(**args):
     def decorator(func):
         bot.add_event_handler(func, telethon.events.CallbackQuery(**args))
         return func
 
     return decorator
+
 
 def auth(func):
     @wraps(func)
@@ -47,8 +50,7 @@ async def get_user(e: telethon.events.NewMessage.Event):
     Args = e.text.split(maxsplit=2)
     if e.is_reply:
         user = (await e.get_reply_message()).sender
-        arg = (Args[1] + (Args[2] if len(Args) > 2 else "")
-               ) if len(Args) > 1 else ""
+        arg = (Args[1] + (Args[2] if len(Args) > 2 else "")) if len(Args) > 1 else ""
     else:
         if len(Args) == 1:
             await e.reply("No user specified")
@@ -67,11 +69,14 @@ async def HasRight(chat_id, user_id, right):
         return True
     if user_id in AUTH:
         return True
-    p = await bot(telethon.tl.functions.channels.GetParticipantRequest(chat_id, user_id))
+    p = await bot(
+        telethon.tl.functions.channels.GetParticipantRequest(chat_id, user_id)
+    )
     p: telethon.tl.types.ChannelParticipant.to_dict
     if p.participant.admin_rights.to_dict()[right] == True:
         return True
     return False
+
 
 async def getSender(e: telethon.events.NewMessage.Event):
     if e.sender != None:
@@ -82,6 +87,7 @@ async def getSender(e: telethon.events.NewMessage.Event):
         else:
             return None
 
+
 def sizeof_fmt(num, suffix="B"):
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
@@ -89,12 +95,12 @@ def sizeof_fmt(num, suffix="B"):
         num /= 1024.0
     return f"{num:.1f}Yi{suffix}"
 
+
 async def bash(code):
     cmd = code.split(" ")
     process = await asyncio.create_subprocess_exec(
         *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
     stdout, stderr = await process.communicate()
-    result = str(stdout.decode().strip()) \
-        + str(stderr.decode().strip())
+    result = str(stdout.decode().strip()) + str(stderr.decode().strip())
     return result

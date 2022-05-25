@@ -1,10 +1,11 @@
-from .helpers import command
-import io
-import traceback
-import sys
 import asyncio
-from pprint import pprint
+import io
+import sys
+import traceback
+
 import requests
+
+from .helpers import command
 
 
 @command(pattern="eval")
@@ -73,7 +74,7 @@ async def _exec(e):
             await e.reply(file=file)
             await p.delete()
     else:
-        f = '`BASH` \n`Output:`\n\n```{}```'.format(out)
+        f = "`BASH` \n`Output:`\n\n```{}```".format(out)
         await p.edit(f)
 
 
@@ -90,21 +91,21 @@ async def _request(e):
         args = args[2:]
     if not url.startswith("http"):
         url = "http://{}".format(url)
-    method = "GET"    
+    method = "GET"
     for m in METHODS:
         if m.lower() in args:
             method = m.upper()
-            break    
-    if '-d' in args:
-        data = args[args.index('-d') + 1]
+            break
+    if "-d" in args:
+        data = args[args.index("-d") + 1]
     else:
         data = None
-    if '-h' in args:
-        headers = args[args.index('-h') + 1]
+    if "-h" in args:
+        headers = args[args.index("-h") + 1]
     else:
         headers = None
-    if '-t' in args:
-        timeout = int(args[args.index('-t') + 1])
+    if "-t" in args:
+        timeout = int(args[args.index("-t") + 1])
     else:
         timeout = 10
     try:
@@ -123,7 +124,8 @@ async def _request(e):
         )
     else:
         resp = "**FAILURE**\n\n`{}`".format(
-            r.text.replace("`", "") if r.text else r.content)
+            r.text.replace("`", "") if r.text else r.content
+        )
     if len(resp) > 4096:
         with io.BytesIO(resp.encode()) as file:
             file.name = "req.txt"
