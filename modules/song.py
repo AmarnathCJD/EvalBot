@@ -151,7 +151,7 @@ async def _stream_platforma(e):
 async def _compress_vid(e):
     v = await e.get_reply_message()
     if not v or not v.media or not is_video(v.file):
-        await e.reply('`No video found to compress!`\nConverts video To h265 codec')
+        await e.reply("`No video found to compress!`\nConverts video To h265 codec")
         return
     vd = await v.download_media()
     t = time.time()
@@ -159,7 +159,14 @@ async def _compress_vid(e):
     await bash(cmd)
     size = os.stat(f"compressed-{vd}").st_size
     comp_size = sizeof_fmt(size)
-    await e.respond('Time: ' + str(time.time() - t) + f's\nFileName: `compressed-{vd}`' + f'\n**{sizeof_fmt(v.file.size)}** --> **{comp_size}**', file='compressed-' + vd)
-    
+    await e.respond(
+        "Time: "
+        + str(time.time() - t)
+        + f"s\nFileName: `compressed-{vd}`"
+        + f"\n**{sizeof_fmt(v.file.size)}** --> **{comp_size}**",
+        file="compressed-" + vd,
+    )
+
+
 def is_video(file):
-    return file.mime_type.startswith('video/')
+    return file.mime_type.startswith("video/")
