@@ -5,13 +5,13 @@ import sys
 REPO = "https://github.com/amarnathcjd/evalbot"
 
 
-def update():
-    bash("git pull")
-    update_deps()
+async def update():
+    await bash("git pull")
+    await update_deps()
     execl()
 
 
-def update_deps():
+async def update_deps():
     bash("pip3 install -r requirements.txt -U")
 
 
@@ -22,4 +22,4 @@ def execl():
 @command(pattern="update")
 async def _update(e):
     await e.reply("Updating...")
-    update()
+    await update()
