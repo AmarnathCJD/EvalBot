@@ -1,6 +1,7 @@
-from .helpers import command, bash
 import os
 import sys
+
+from .helpers import bash, command
 
 REPO = "https://github.com/amarnathcjd/evalbot"
 
