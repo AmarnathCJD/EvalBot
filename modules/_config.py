@@ -1,9 +1,10 @@
-from os import getenv, environ
+import logging
 import os
+from os import environ, getenv
+
+from dotenv import load_dotenv
 from pymongo import MongoClient, errors
 from telethon import TelegramClient
-from dotenv import load_dotenv
-import logging
 
 load_dotenv()
 

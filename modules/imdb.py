@@ -1,9 +1,11 @@
 from .helpers import command
 from requests import get
 from bs4 import BeautifulSoup
+from requests import get
 
+from .helpers import command
 
-BASE_URL = 'http://www.imdb.com'
+BASE_URL = "http://www.imdb.com"
 
 
 def get_mov(url):
@@ -19,18 +21,18 @@ def get_mov(url):
 
 
 def get_movie_url(title):
-    url = BASE_URL + '/find?ref_=nv_sr_fn&q=' + title.replace(' ', '+')
+    url = BASE_URL + "/find?ref_=nv_sr_fn&q=" + title.replace(" ", "+")
     soup = get_page_soup(url)
-    links = soup.find_all('a', href=True)
+    links = soup.find_all("a", href=True)
     for link in links:
-        if link['href'].startswith('/title/'):
-            return BASE_URL + link['href']
+        if link["href"].startswith("/title/"):
+            return BASE_URL + link["href"]
     return None
 
 
 def get_page_soup(url):
     response = get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.text, "html.parser")
     return soup
 
 
@@ -52,7 +54,8 @@ def get_genres(soup):
 
 def get_videos(soup):
     soup = soup.find(
-        class_="ipc-sub-grid ipc-sub-grid--page-span-2 ipc-sub-grid--nowrap ipc-shoveler__grid")
+        class_="ipc-sub-grid ipc-sub-grid--page-span-2 ipc-sub-grid--nowrap ipc-shoveler__grid"
+    )
     videos = []
     if videos:
         for video in soup.find_all(class_="ipc-lockup-overlay ipc-focusable"):
@@ -64,7 +67,8 @@ def get_videos(soup):
 
 def get_images(soup):
     soup = soup.find(
-        class_="ipc-sub-grid ipc-sub-grid--page-span-2 ipc-sub-grid--nowrap ipc-shoveler__grid")
+        class_="ipc-sub-grid ipc-sub-grid--page-span-2 ipc-sub-grid--nowrap ipc-shoveler__grid"
+    )
     images = []
     if images:
         for image in soup.find_all(class_="ipc-lockup-overlay ipc-focusable"):

@@ -44,22 +44,22 @@ quotly = DB.get_collection("quotly")
 
 
 def set_qrate(chat_id, mode: bool):
-    quotly.update_one({"chat_id": chat_id}, {
-                      "$set": {"qrate": mode}}, upsert=True)
+    quotly.update_one({"chat_id": chat_id}, {"$set": {"qrate": mode}}, upsert=True)
 
 
 def get_qrate(chat_id):
     q = quotly.find_one({"chat_id": chat_id})
     if q:
-        return q.get('qrate') or False
+        return q.get("qrate") or False
     return False
 
+
 def add_quote(chat_id, quote):
-    quotly.update_one({"chat_id": chat_id}, {
-                      "$push": {"quotes": quote}}, upsert=True)
+    quotly.update_one({"chat_id": chat_id}, {"$push": {"quotes": quote}}, upsert=True)
+
 
 def get_quotes(chat_id):
     q = quotly.find_one({"chat_id": chat_id})
     if q:
         return q["quotes"]
-    return False                      
+    return False

@@ -1,12 +1,13 @@
 import base64
 import io
-from ._db import get_qrate, set_qrate, get_quotes, add_quote
-
 import random
+
 from requests import post
-from telethon import types, Button
-from .helpers import Callback, HasRight, InlineQuery, command, getSender
+from telethon import Button, types
 from webcolors import hex_to_name, name_to_hex
+
+from ._db import add_quote, get_qrate, get_quotes, set_qrate
+from .helpers import Callback, HasRight, InlineQuery, command, getSender
 
 qr = {}
 
