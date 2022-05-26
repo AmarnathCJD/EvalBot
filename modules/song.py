@@ -186,8 +186,10 @@ async def download_video(url: str, quality: str):
             pass
         await bash("yt-dlp {} -f {} -o {}video.mp4".format(url, vitag, DIR))
         await bash("yt-dlp {} -f {} -o {}audio.opus".format(url, aitag, DIR))
-        Ffmpeg_Merge = "ffmpeg -i {}video.mp4 -i {}audio.opus -shortest {}output.mp4".format(
-            DIR, DIR, DIR
+        Ffmpeg_Merge = (
+            "ffmpeg -i {}video.mp4 -i {}audio.opus -shortest {}output.mp4".format(
+                DIR, DIR, DIR
+            )
         )
         print(Ffmpeg_Merge)
         await bash(Ffmpeg_Merge)
