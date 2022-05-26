@@ -178,7 +178,7 @@ async def download_video(url: str, quality: str):
         f = await bash(FORMATS_CMD)
         vitag = [x.split()[0] for x in f.splitlines() if "1080" in x][-1]
         aitag = [x.split()[0] for x in f.splitlines() if "opus" in x][-1]
-        ID = url.split("/")[-1]
+        ID = url.split("=")[-1]
         DIR = "/{}/".format(ID)
         try:
             os.mkdir(DIR)
