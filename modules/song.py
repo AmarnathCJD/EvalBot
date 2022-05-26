@@ -170,3 +170,24 @@ async def _compress_vid(e):
 
 def is_video(file):
     return file.mime_type.startswith("video/")
+
+
+async def download_video(url: str, quality: str):
+ if quality == "1080":
+  FORMATS_CMD = 'yt-dlp {} -F'.format(url)
+  f = await bash(FORMATS_CMD)
+  vitag = [x.split()[0] for x in f.splitlines() if "1080" in x][-1]
+  aitag = [x.split()[0] for x in f.splitlines() if "opus" in x][-1]
+  ID = url.split("/")[-1]
+  DIR = "/{}/".format(ID)
+  try:
+   os.mkdir(DIR)
+  except OSError:
+   pass
+  await bash("yt-dlp {} -f {} -o {}/video.mp4".format(url, vitag, DIR))
+  await bash("yt-dlp {} -f {} -o {}/audio.opus".format(url, aitag, DIR))
+  FFMPEG = 'ffmpeg -i {}/video.mp4 -i {}/audio.opus -c copy mixed.mp4'.format(DIR, DIR)
+  await bash(FFMPEG)
+  return DIR + "/" + "mixed.mp4"
+
+  
