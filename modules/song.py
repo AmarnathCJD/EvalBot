@@ -183,9 +183,11 @@ async def _dl_hd(e):
     except (IndexError, KeyError, TypeError):
         return await e.reply("No song result found for your query!")
     axe = await e.reply(
-        "Preparing to upload Video **{}**\nQuality: 1080p".format(vd.get("title"))
+        "Preparing to upload Video **{}**\nQuality: {}".format(vd.get("title"), Quality)
     )
     v = await download_video(vd["link"], "1080")
+    if v == "err":
+        await e.reply("Queries Quality is not available for this video.")
     thumb_url = vd["thumbnails"][0]["url"]
     with open("thumb.jpg", "wb") as t:
         t.write(requests.get(thumb_url).content)
@@ -195,11 +197,13 @@ async def _dl_hd(e):
 
 
 async def download_video(url: str, quality: str):
-    if quality == "1080":
         FORMATS_CMD = "yt-dlp {} -F --write-thumbnail".format(url)
         f = await bash(FORMATS_CMD)
-        vitag = [x.split()[0] for x in f.splitlines() if "1080" in x][-1]
-        aitag = [x.split()[0] for x in f.splitlines() if "opus" in x][-1]
+        try: 
+         vitag = [x.split()[0] for x in f.splitlines() if quality in x][-1]
+         aitag = [x.split()[0] for x in f.splitlines() if "opus" in x][-1]
+        except:
+         return "err"
         ID = url.split("=")[-1]
         DIR = "./{}/".format(ID)
         try:
