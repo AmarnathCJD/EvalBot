@@ -185,7 +185,7 @@ async def _dl_hd(e):
 
 async def download_video(url: str, quality: str):
     if quality == "1080":
-        FORMATS_CMD = "yt-dlp {} -F".format(url)
+        FORMATS_CMD = "yt-dlp {} -F --write-thumbnail".format(url)
         f = await bash(FORMATS_CMD)
         vitag = [x.split()[0] for x in f.splitlines() if "1080" in x][-1]
         aitag = [x.split()[0] for x in f.splitlines() if "opus" in x][-1]
