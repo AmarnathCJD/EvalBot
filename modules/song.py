@@ -185,7 +185,7 @@ async def _dl_hd(e):
     v = await download_video(vd[0]["link"], "1080")
     thumb_url = vd[0]["thumbnails"][0]["url"]
     with open("thumb.jpg", "wb") as t:
-         t.write(requests.get(thumb_url).content)
+        t.write(requests.get(thumb_url).content)
     async with e.client.action(e.chat_id, "video"):
         await e.respond(file=v, thumb="thumb.jpg")
 
