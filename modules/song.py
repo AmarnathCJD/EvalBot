@@ -172,6 +172,16 @@ def is_video(file):
     return file.mime_type.startswith("video/")
 
 
+@command(pattern="dlhd")
+async def _dl_hd(e):
+ try:
+  v = e.text.split(maxsplit=1)[1]
+ except:
+  return await e.reply("No URL given")
+ v = await download_video(v, "1080")
+ async with e.client.action(e.chat_id, "video"):
+       await e.respond(file=v)
+
 async def download_video(url: str, quality: str):
     if quality == "1080":
         FORMATS_CMD = "yt-dlp {} -F".format(url)
@@ -187,10 +197,10 @@ async def download_video(url: str, quality: str):
         await bash("yt-dlp {} -f {} -o {}video.mp4".format(url, vitag, DIR))
         await bash("yt-dlp {} -f {} -o {}audio.opus".format(url, aitag, DIR))
         Ffmpeg_Merge = (
-            "ffmpeg -i {}video.mp4 -i {}audio.opus -shortest {}output.mp4".format(
+            "ffmpeg -i {}video.mp4 -i {}audio.opus -c copy {}output.mkv".format(
                 DIR, DIR, DIR
             )
         )
         print(Ffmpeg_Merge)
         await bash(Ffmpeg_Merge)
-        return DIR + "output.mp4"
+        return DIR + "output.mkv"
