@@ -2,7 +2,6 @@ import asyncio
 import io
 import sys
 import traceback
-
 import requests
 
 from .helpers import command
@@ -49,6 +48,7 @@ async def aexec(code, event):
             + "\n message = event = e"
             + "\n r = reply = await event.get_reply_message()"
             + "\n chat = event.chat_id"
+            + "\n from pprint import pprint"
             + "\n pp = pprint"
         )
         + "".join(f"\n {l}" for l in code.split("\n"))
