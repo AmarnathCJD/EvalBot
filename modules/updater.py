@@ -13,7 +13,7 @@ async def update():
 
 
 async def update_deps():
-    bash("pip3 install -r requirements.txt -U")
+    await bash("pip3 install -r requirements.txt -U")
 
 
 def execl():
