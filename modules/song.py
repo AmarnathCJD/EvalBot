@@ -179,15 +179,21 @@ async def _dl_hd(e):
     except:
         return await e.reply("No URL given")
     try:
-        vd = vs(q, limit=1).result()["result"][0]
+        vd = vs(v, limit=1).result()["result"][0]
     except (IndexError, KeyError, TypeError):
         return await e.reply("No song result found for your query!")
-    v = await download_video(vd[0]["link"], "1080")
-    thumb_url = vd[0]["thumbnails"][0]["url"]
+    axe = await e.reply(
+        "Preparing to upload Video **{}**\nQuality: 1080p".format(
+            v.get("title")
+        )
+    )
+    v = await download_video(vd["link"], "1080")
+    thumb_url = vd["thumbnails"][0]["url"]
     with open("thumb.jpg", "wb") as t:
         t.write(requests.get(thumb_url).content)
     async with e.client.action(e.chat_id, "video"):
         await e.respond(file=v, thumb="thumb.jpg")
+    await axe.delete()
 
 
 async def download_video(url: str, quality: str):
