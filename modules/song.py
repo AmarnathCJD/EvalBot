@@ -184,10 +184,11 @@ async def download_video(url: str, quality: str):
             os.mkdir(DIR)
         except OSError:
             pass
-        await bash("yt-dlp {} -f {} -o {}/video.mp4".format(url, vitag, DIR))
-        await bash("yt-dlp {} -f {} -o {}/audio.opus".format(url, aitag, DIR))
-        FFMPEG = "ffmpeg -i {}video.mp4 -i {}audio.opus -c copy {}output.mp4".format(
+        await bash("yt-dlp {} -f {} -o {}video.mp4".format(url, vitag, DIR))
+        await bash("yt-dlp {} -f {} -o {}audio.opus".format(url, aitag, DIR))
+        Ffmpeg_Merge = "ffmpeg -i {}video.mp4 -i {}audio.opus -shortest {}output.mp4".format(
             DIR, DIR, DIR
         )
-        await bash(FFMPEG)
+        print(Ffmpeg_Merge)
+        await bash(Ffmpeg_Merge)
         return DIR + "output.mp4"
