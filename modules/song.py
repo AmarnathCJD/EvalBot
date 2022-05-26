@@ -186,8 +186,8 @@ async def download_video(url: str, quality: str):
             pass
         await bash("yt-dlp {} -f {} -o {}/video.mp4".format(url, vitag, DIR))
         await bash("yt-dlp {} -f {} -o {}/audio.opus".format(url, aitag, DIR))
-        FFMPEG = "ffmpeg -i {}/video.mp4 -i {}/audio.opus -c copy mixed.mp4".format(
+        FFMPEG = "ffmpeg -i {}video.mp4 -i {}audio.opus -c copy mixed.mp4".format(
             DIR, DIR
         )
         await bash(FFMPEG)
-        return DIR + "/" + "mixed.mp4"
+        return DIR + "output.mp4"
