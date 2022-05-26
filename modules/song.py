@@ -183,7 +183,7 @@ async def _dl_hd(e):
     except (IndexError, KeyError, TypeError):
         return await e.reply("No song result found for your query!")
     axe = await e.reply(
-        "Preparing to upload Video **{}**\nQuality: 1080p".format(v.get("title"))
+        "Preparing to upload Video **{}**\nQuality: 1080p".format(vd.get("title"))
     )
     v = await download_video(vd["link"], "1080")
     thumb_url = vd["thumbnails"][0]["url"]
