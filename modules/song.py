@@ -180,10 +180,10 @@ async def _dl_hd(e):
         return await e.reply("No URL given")
     q = v.split("-")
     if len(q) == 1:
-       q = "1080"
+        q = "1080"
     else:
-       q = q[1]
-       v = v.replace(q)
+        q = q[1]
+        v = v.replace(q)
     try:
         vd = vs(v, limit=1).result()["result"][0]
     except (IndexError, KeyError, TypeError):
@@ -203,26 +203,24 @@ async def _dl_hd(e):
 
 
 async def download_video(url: str, quality: str):
-        FORMATS_CMD = "yt-dlp {} -F --write-thumbnail".format(url)
-        f = await bash(FORMATS_CMD)
-        try: 
-         vitag = [x.split()[0] for x in f.splitlines() if quality in x][-1]
-         aitag = [x.split()[0] for x in f.splitlines() if "opus" in x][-1]
-        except:
-         return "err"
-        ID = url.split("=")[-1]
-        DIR = "./{}/".format(ID)
-        try:
-            os.mkdir(DIR)
-        except OSError:
-            pass
-        await bash("yt-dlp {} -f {} -o {}video.mp4".format(url, vitag, DIR))
-        await bash("yt-dlp {} -f {} -o {}audio.opus".format(url, aitag, DIR))
-        Ffmpeg_Merge = (
-            "ffmpeg -i {}video.mp4 -i {}audio.opus -c copy {}output.mkv".format(
-                DIR, DIR, DIR
-            )
-        )
-        print(Ffmpeg_Merge)
-        await bash(Ffmpeg_Merge)
-        return DIR + "output.mkv"
+    FORMATS_CMD = "yt-dlp {} -F --write-thumbnail".format(url)
+    f = await bash(FORMATS_CMD)
+    try:
+        vitag = [x.split()[0] for x in f.splitlines() if quality in x][-1]
+        aitag = [x.split()[0] for x in f.splitlines() if "opus" in x][-1]
+    except:
+        return "err"
+    ID = url.split("=")[-1]
+    DIR = "./{}/".format(ID)
+    try:
+        os.mkdir(DIR)
+    except OSError:
+        pass
+    await bash("yt-dlp {} -f {} -o {}video.mp4".format(url, vitag, DIR))
+    await bash("yt-dlp {} -f {} -o {}audio.opus".format(url, aitag, DIR))
+    Ffmpeg_Merge = "ffmpeg -i {}video.mp4 -i {}audio.opus -c copy {}output.mkv".format(
+        DIR, DIR, DIR
+    )
+    print(Ffmpeg_Merge)
+    await bash(Ffmpeg_Merge)
+    return DIR + "output.mkv"
