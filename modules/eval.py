@@ -5,10 +5,11 @@ import traceback
 
 import requests
 
-from .helpers import command
+from .helpers import command, auth
 
 
 @command(pattern="eval")
+@auth
 async def _eval(e):
     try:
         c = e.text.split(" ", 1)[1]
@@ -58,6 +59,7 @@ async def aexec(code, event):
 
 
 @command(pattern="(bash|exec)")
+@auth
 async def _exec(e):
     try:
         cmd = e.text.split(maxsplit=1)[1]
