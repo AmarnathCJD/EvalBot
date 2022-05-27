@@ -6,8 +6,9 @@ from .helpers import command, get_user, master
 @command(pattern="auth|deauth|authlist")
 @master
 async def _auth(e):
+    cmd = e.text.split()[0][1:]
     user, arg = await get_user(e)
-    if not user:
+    if not user and cmd != "authlist":
         return
     if user.bot:
         await e.reply("Bots can't be authed")
@@ -18,7 +19,7 @@ async def _auth(e):
     elif user.id == e.sender_id:
         await e.reply("You can't auth yourself")
         return
-    if e.text.split()[0][1:] == "authlist":
+    if cmd == "authlist":
         await e.reply("**Auth List:**\n" + "\n".join(str(x) for x in AUTH))
         return
     if user.id in AUTH:
