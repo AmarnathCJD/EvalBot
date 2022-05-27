@@ -5,7 +5,7 @@ import traceback
 
 import requests
 
-from .helpers import command, auth
+from .helpers import auth, command
 
 
 @command(pattern="eval")
