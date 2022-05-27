@@ -43,6 +43,7 @@ def auth(func):
 
     return sed
 
+
 def master(func):
     @wraps(func)
     async def sed(e):
@@ -50,6 +51,7 @@ def master(func):
             await func(e)
         else:
             await e.reply("You are not authorized to use this command :SED")
+
     return sed
 
 
