@@ -1,9 +1,10 @@
 from ._config import OWNER_ID
 from ._db import AUTH, auth_user, unauth_user
-from .helpers import command, get_user
+from .helpers import command, get_user, master
 
 
 @command(pattern="auth|deauth|authlist")
+@master
 async def _auth(e):
     user, arg = await get_user(e)
     if not user:
