@@ -43,6 +43,15 @@ def auth(func):
 
     return sed
 
+def master(func):
+    @wraps(func)
+    async def sed(e):
+        if e.sender_id == OWNER_ID:
+            await func(e)
+        else:
+            await e.reply("You are not authorized to use this command :SED")
+    return sed
+
 
 async def get_user(e: telethon.events.NewMessage.Event):
     user: telethon.tl.types.User
