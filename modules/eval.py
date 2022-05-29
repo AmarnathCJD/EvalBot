@@ -112,7 +112,8 @@ async def _request(e):
     else:
         timeout = 10
     try:
-        r = requests.request(method, url, data=data, headers=headers, timeout=timeout)
+        r = requests.request(method, url, data=data,
+                             headers=headers, timeout=timeout)
     except requests.exceptions.ConnectionError:
         return await e.reply("No internet connection.")
     except requests.exceptions.Timeout:
@@ -135,3 +136,24 @@ async def _request(e):
             await e.reply(file=file)
     else:
         await e.reply(resp)
+
+
+@command(pattern="ext")
+async def _ext(e):
+    try:
+        ext = e.text.split(" ", 1)[1]
+    except IndexError:
+        return await e.reply("No extension provided.")
+    if ext.startswith("."):
+        ext = ext[1:]
+    URL = "https://api.roseloverx.tk/fileinfo/{}".format(ext)
+    r = requests.get(URL)
+    if r.status_code == 200:
+        response = f"""
+        **Extension:** `{ext}`
+        **Description:** `{r.json()['description']}`
+        """
+        image = r.json().get('icon')
+        await e.reply(response, image=image)
+    else:
+        await e.reply("No extension found.")
