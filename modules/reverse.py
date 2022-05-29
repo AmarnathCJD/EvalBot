@@ -48,10 +48,11 @@ def collect_results(soup):
     images = []
     images_div = soup.find(class_="pvresd LFls2 MBlpC")
     if images_div:
-        for result in images_div.find_all("img"):
+        for result in images_div.find_all(attrs={"alt": "Image result"}):
             src = result["src"] if result["src"] else ""
             if not src:
                 continue
+            print(src)
             byte = src.split(",", maxsplit=1)[1]
             print(byte)
             byte = base64.b64decode(byte)
