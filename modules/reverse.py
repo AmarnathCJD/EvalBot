@@ -6,8 +6,7 @@ from modules.helpers import command
 
 def upload_img(filePath):
     searchUrl = "http://www.google.hr/searchbyimage/upload"
-    multipart = {"encoded_image": (filePath, open(
-        filePath, "rb")), "image_content": ""}
+    multipart = {"encoded_image": (filePath, open(filePath, "rb")), "image_content": ""}
     response = requests.post(searchUrl, files=multipart, allow_redirects=False)
     fetchUrl = response.headers["Location"]
     return fetchUrl
@@ -33,8 +32,7 @@ def collect_results(soup):
     results = []
     for result in soup.find_all(class_="jtfYYd"):
         title = (
-            result.find(class_="LC20lb").text if result.find(
-                class_="LC20lb") else ""
+            result.find(class_="LC20lb").text if result.find(class_="LC20lb") else ""
         )
         if not title:
             continue
@@ -42,11 +40,9 @@ def collect_results(soup):
         description = (
             result.find_all("span")[-1].text if result.find_all("span") else ""
         )
-        results.append({"title": title, "url": url,
-                       "description": description})
+        results.append({"title": title, "url": url, "description": description})
 
-    title = soup.find(class_="fKDtNb").text if soup.find(
-        class_="fKDtNb") else ""
+    title = soup.find(class_="fKDtNb").text if soup.find(class_="fKDtNb") else ""
     return results, title
 
 
