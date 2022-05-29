@@ -23,7 +23,7 @@ def fetch_img(url):
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
     }
     response = requests.get(
-        "http://www.google.hr/search?tbs=sbi:AMhZZithYYziVfBpTTN57X6ZcbSqTJwUtDboW_1qpQ-WhjZZLSvPzqhgFeZFrd_13OLh88Tt1X72UzeceuDBjTy5MAvqkHlE_1H-1A4dGI0XgCPOWjvNpPoExgteqMI7DQH_1LayaKCo0RuKp9anA9F5ZFIHCDD2YgfdcnyDt9RJfC7KRArt_1dIUVqvxOyEmb0TXDPw4ZvUYknGFbeA0sR0rAb3U064SRpQwG0BmAS6aku_14gDCrelrQcBhirTn39dbY6tuCL03VkWBvDNVrg-6KxoPxM12eu7dbr5NDzcIjmyy7RykEzlmDSyqZaWgKLfVtwcuuEuWByjVA",
+        url,
         headers=headers,
         verify=False,
     )
