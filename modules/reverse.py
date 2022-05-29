@@ -106,8 +106,8 @@ async def _igdl(e):
                     HEIGHT = i["width"]
                     IMAGE = i["url"]
             if not IMAGE:
-                return await e.edit("`Couldn't find any images in this post.`")
+                return await e.reply("`Couldn't find any images in this post.`")
         except KeyError:
-            return await e.edit("`Couldn't find any images in this post.`")
+            return await e.reply("`Couldn't find any images in this post.`")
     async with e.client.action(e.chat_id, ("photo" if not VID else "video")):
         await e.client.send_file(e.chat_id, IMAGE, caption=caption)
