@@ -1,4 +1,5 @@
 from os import getenv
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -68,6 +69,7 @@ async def _reverse(e):
             break
     await rp.edit(RESULT)
 
+
 # INSTAGRAM DL
 IG_SESSION_ID = getenv("IG_SESSION_ID")
 
@@ -87,7 +89,7 @@ async def _igdl(e):
     print(url)
     data = requests.get(url, cookies=cookies).json()
     try:
-        caption = data["items"]['caption']['text']
+        caption = data["items"]["caption"]["text"]
     except KeyError:
         caption = ""
     try:
