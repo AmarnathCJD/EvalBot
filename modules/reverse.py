@@ -45,20 +45,8 @@ def collect_results(soup):
         )
         results.append({"title": title, "url": url, "description": description})
 
-    images = []
-    images_div = soup.find(class_="pvresd LFls2 MBlpC")
-    if images_div:
-        for result in images_div.find_all(attrs={"alt": "Image result"}):
-            src = result["src"] if result["src"] else ""
-            if not src:
-                continue
-            print(src)
-            byte = src.split(",", maxsplit=1)[1]
-            print(byte)
-            byte = base64.b64decode(byte)
-            images.append(byte)
     title = soup.find(class_="fKDtNb").text if soup.find(class_="fKDtNb") else ""
-    return results, images, title
+    return results, title
 
 
 @command(pattern="reverse")
@@ -69,7 +57,7 @@ async def _reverse(e):
         return
     rp = await e.reply("`Processing...`")
     p = await e.client.download_media(r.media)
-    results, images, title = collect_results(fetch_img(upload_img(p)))
+    results, title = collect_results(fetch_img(upload_img(p)))
     if not results:
         await rp.edit("`Couldn't find anything in reverse search.`")
         return
@@ -78,15 +66,6 @@ async def _reverse(e):
     for result in results:
         q += 1
         RESULT += f"`{q}.` [{result['title']}]({result['url']})\n"
-        if q == 3:
+        if q == 5:
             break
-    album = []
-    for image in images:
-        if len(album) == 3:
-            break
-        f = io.BytesIO(image)
-        f.name = "image.png"
-        album.append(f)
-    await e.client.send_file(e.chat_id, album, caption=RESULT, reply_to=rp.id)
-    for image in album:
-        image.close()
+    await rp.edit(RESULT)
