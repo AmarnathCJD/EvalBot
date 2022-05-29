@@ -9,7 +9,8 @@ from modules.helpers import command
 
 def upload_img(filePath):
     searchUrl = "http://www.google.hr/searchbyimage/upload"
-    multipart = {"encoded_image": (filePath, open(filePath, "rb")), "image_content": ""}
+    multipart = {"encoded_image": (filePath, open(
+        filePath, "rb")), "image_content": ""}
     response = requests.post(searchUrl, files=multipart, allow_redirects=False)
     fetchUrl = response.headers["Location"]
     return fetchUrl
@@ -35,7 +36,8 @@ def collect_results(soup):
     results = []
     for result in soup.find_all(class_="jtfYYd"):
         title = (
-            result.find(class_="LC20lb").text if result.find(class_="LC20lb") else ""
+            result.find(class_="LC20lb").text if result.find(
+                class_="LC20lb") else ""
         )
         if not title:
             continue
@@ -43,7 +45,8 @@ def collect_results(soup):
         description = (
             result.find_all("span")[-1].text if result.find_all("span") else ""
         )
-        results.append({"title": title, "url": url, "description": description})
+        results.append({"title": title, "url": url,
+                       "description": description})
 
     images = []
     images_div = soup.find(class_="pvresd LFls2 MBlpC")
@@ -54,7 +57,9 @@ def collect_results(soup):
         byte = src.split(",")[1]
         byte = base64.b64decode(byte)
         images.append(byte)
-    return results, images
+    title = soup.find(class_="fKDtNb").text if soup.find(
+        class_="fKDtNb") else ""
+    return results, images, title
 
 
 @command(pattern="reverse")
@@ -65,13 +70,11 @@ async def _reverse(e):
         return
     rp = await e.reply("`Processing...`")
     p = await e.client.download_media(r.media)
-    url = upload_img(p)
-    soup = fetch_img(url)
-    results, images = collect_results(soup)
+    results, images, title = collect_results(fetch_img(upload_img(p)))
     if not results:
         await rp.edit("`Couldn't find anything in reverse search.`")
         return
-    RESULT = f"**Search Query:**\n`{url}`\n\n**Results:**\n"
+    RESULT = f"**Search Query:**\n`{title}`\n\n**Results:**\n"
     q = 0
     for result in results:
         q += 1
@@ -82,5 +85,7 @@ async def _reverse(e):
     for image in images:
         if len(album) == 3:
             break
-        album.append(io.BytesIO(image))
+        with io.BytesIO(image) as f:
+            f.name = "image.jpg"
+            album.append(f)
     await e.client.send_file(e.chat_id, album, caption=RESULT, reply_to=rp.id)
