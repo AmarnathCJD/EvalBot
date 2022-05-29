@@ -89,11 +89,11 @@ async def _igdl(e):
     print(url)
     data = requests.get(url, cookies=cookies).json()
     try:
-        caption = data["items"]["caption"]["text"]
+        caption = data["items"][0]["caption"]["text"]
     except KeyError:
         caption = ""
     try:
-        images = data["items"]["carousel_media"][0]["image_versions2"]["candidates"]
+        images = data["items"][0]["carousel_media"][0]["image_versions2"]["candidates"]
         HEIGHT = 0
         IMAGE = ""
         for i in images:
