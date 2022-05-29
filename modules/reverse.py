@@ -59,9 +59,6 @@ async def _reverse(e):
     if not r or not r.media:
         await e.edit("`Reply to a photo or sticker to reverse it.`")
         return
-    if not r.file.name.endswith((".jpg", ".png", ".jpeg", ".bmp", ".webp")):
-        await e.edit("`Reply to static a photo or sticker to reverse it.`")
-        return
     rp = await e.reply("`Processing...`")
     p = await e.client.download_media(r.media)
     url = upload_img(p)
@@ -79,5 +76,7 @@ async def _reverse(e):
             break
     album = []
     for image in images:
+        if len(album) == 3:
+            break
         album.append(io.BytesIO(image))
     await e.client.send_file(e.chat_id, album, caption=RESULT, reply_to=rp.id)
