@@ -103,6 +103,6 @@ async def _igdl(e):
     except KeyError:
         return await e.edit("`Couldn't find any images in this post.`")
     if len(data["items"][0]["video_versions"]) > 0:
-        IMAGE = data["items"][0]["video_versions"][0]['url']
+        IMAGE = data["items"][0]["video_versions"][0]["url"]
     async with e.client.action(e.chat_id, "photo"):
         await e.client.send_file(e.chat_id, IMAGE, caption=caption)
