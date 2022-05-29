@@ -85,7 +85,9 @@ async def _reverse(e):
     for image in images:
         if len(album) == 3:
             break
-        with io.BytesIO(image) as f:
-            f.name = "image.jpg"
-            album.append(f)
+        f = io.BytesIO(image)
+        f.name = "image.png"
+        album.append(f)
     await e.client.send_file(e.chat_id, album, caption=RESULT, reply_to=rp.id)
+    for image in album:
+        image.close()
