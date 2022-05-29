@@ -112,8 +112,7 @@ async def _request(e):
     else:
         timeout = 10
     try:
-        r = requests.request(method, url, data=data,
-                             headers=headers, timeout=timeout)
+        r = requests.request(method, url, data=data, headers=headers, timeout=timeout)
     except requests.exceptions.ConnectionError:
         return await e.reply("No internet connection.")
     except requests.exceptions.Timeout:
@@ -153,7 +152,7 @@ async def _ext(e):
         **Extension:** `{ext}`
         **Description:** `{r.json()['description']}`
         """
-        image = r.json().get('icon')
+        image = r.json().get("icon")
         await e.reply(response, image=image)
     else:
         await e.reply("No extension found.")
