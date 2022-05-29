@@ -95,17 +95,19 @@ async def _igdl(e):
         IMAGE = data["items"][0]["video_versions"][0]["url"]
         VID = True
     else:
-     try:
-        images = data["items"][0]["carousel_media"][0]["image_versions2"]["candidates"]
-        HEIGHT = 0
-        IMAGE = ""
-        for i in images:
-            if i["width"] > HEIGHT:
-                HEIGHT = i["width"]
-                IMAGE = i["url"]
-        if not IMAGE:
+        try:
+            images = data["items"][0]["carousel_media"][0]["image_versions2"][
+                "candidates"
+            ]
+            HEIGHT = 0
+            IMAGE = ""
+            for i in images:
+                if i["width"] > HEIGHT:
+                    HEIGHT = i["width"]
+                    IMAGE = i["url"]
+            if not IMAGE:
+                return await e.edit("`Couldn't find any images in this post.`")
+        except KeyError:
             return await e.edit("`Couldn't find any images in this post.`")
-     except KeyError:
-        return await e.edit("`Couldn't find any images in this post.`")
     async with e.client.action(e.chat_id, ("photo" if not VID else "video")):
         await e.client.send_file(e.chat_id, IMAGE, caption=caption)
