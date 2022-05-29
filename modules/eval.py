@@ -5,7 +5,7 @@ import traceback
 
 import requests
 
-from .helpers import auth, command
+from .helpers import auth, command, get_user
 
 
 @command(pattern="eval")
@@ -157,3 +157,26 @@ async def _ext(e):
         await e.reply(response, image=image)
     else:
         await e.reply("No extension found.")
+
+
+@command(pattern="info")
+async def _info(e):
+    if not e.is_reply and len(e.text.split()) == 1:
+        user = e.sender
+    else:
+        user, _ = await get_user(e)
+    if not user:
+        return await e.reply("No user found.")
+    USER_INFO = (
+        "**USER INFO**\n"
+        "`Name:` **{}**\n"
+        "`ID:` **{}**\n"
+        "`Username:` **{}**\n"
+        "`Bot:` **{}**\n"
+    ).format(
+        user.first_name,
+        user.id,
+        user.username,
+        user.bot,
+    )
+    await e.reply(USER_INFO)
