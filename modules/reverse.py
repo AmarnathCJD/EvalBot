@@ -1,6 +1,3 @@
-import base64
-import io
-
 import requests
 from bs4 import BeautifulSoup
 
