@@ -55,7 +55,8 @@ def collect_results(soup):
             src = result["src"] if result["src"] else ""
             if not src:
                 continue
-            byte = src.split(",")[1]
+            byte = src.split(",", maxsplit=1)[1]
+            print(byte)
             byte = base64.b64decode(byte)
             images.append(byte)
     title = soup.find(class_="fKDtNb").text if soup.find(
