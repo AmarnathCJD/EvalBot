@@ -91,7 +91,8 @@ async def _igdl(e):
     except KeyError:
         caption = ""
     VID = False
-    if len(data["items"][0]["video_versions"]) > 0:
+    if data["items"][0].get('video_versions'):
+     if len(data["items"][0]["video_versions"]) > 0:
         IMAGE = data["items"][0]["video_versions"][0]["url"]
         VID = True
     else:
