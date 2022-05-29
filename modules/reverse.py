@@ -1,3 +1,4 @@
+from os import getenv
 import requests
 from bs4 import BeautifulSoup
 
@@ -70,3 +71,38 @@ async def _reverse(e):
         if q == 5:
             break
     await rp.edit(RESULT)
+
+# INSTAGRAM DL
+IG_SESSION_ID = getenv("IG_SESSION_ID")
+
+
+@command(pattern="igdl")
+async def _igdl(e):
+    try:
+        url = e.text.split(" ")[1]
+    except IndexError:
+        await e.reply("`Usage: .igdl <url>`")
+        return
+    url = url + "&__a=1"
+    cookies = {
+        "sessionid": IG_SESSION_ID,
+    }
+    data = requests.get(url, cookies=cookies).json()
+    try:
+        caption = data["items"]['caption']['text']
+    except KeyError:
+        caption = ""
+    try:
+        images = data["items"]["carousel_media"][0]["image_versions2"]["candidates"]
+        HEIGHT = 0
+        IMAGE = ""
+        for i in images:
+            if i["width"] > HEIGHT:
+                HEIGHT = i["width"]
+                IMAGE = i["url"]
+        if not IMAGE:
+            return await e.edit("`Couldn't find any images in this post.`")
+    except KeyError:
+        return await e.edit("`Couldn't find any images in this post.`")
+    async with e.client.action(e.chat_id, "photo"):
+        await e.client.send_file(e.chat_id, IMAGE, caption=caption)
