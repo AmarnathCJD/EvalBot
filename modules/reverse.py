@@ -83,6 +83,8 @@ async def _igdl(e):
     cookies = {
         "sessionid": IG_SESSION_ID,
     }
+    print(cookies)
+    print(url)
     data = requests.get(url, cookies=cookies).json()
     try:
         caption = data["items"]['caption']['text']
