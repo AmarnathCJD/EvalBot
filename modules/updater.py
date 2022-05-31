@@ -9,7 +9,6 @@ REPO = "https://github.com/amarnathcjd/evalbot"
 async def update():
     await bash("git pull")
     await update_deps()
-    execl()
 
 
 async def update_deps():
@@ -27,5 +26,6 @@ async def generate_github_change_log():
 @command(pattern="update")
 async def _update(e):
     await e.reply("Updating...")
-    await e.reply((await generate_github_change_log()))
     await update()
+    await e.reply((await generate_github_change_log()))
+    execl()
