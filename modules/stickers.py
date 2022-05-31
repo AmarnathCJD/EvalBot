@@ -50,7 +50,7 @@ async def _resize(e):
 
 
 GIF_TO_WEBM = "ffmpeg -i '{}' -c vp9 -b:v 0 -crf 40 -vf scale={}:{} -t 00:00:03 '{}'"
-VID_DIMENTIONS = "ffprobe -v error -show_entries stream=width,height -of default=noprint_wrappers=1 '{}'"
+VID_DIMENTIONS = "ffprobe -v error -select_streams v -show_entries stream=width,height -of csv=p=0:s=x {}"
 
 
 @command(pattern="webm")
