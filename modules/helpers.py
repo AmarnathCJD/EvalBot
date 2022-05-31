@@ -15,11 +15,7 @@ def command(**args):
 
     def decorator(func):
         async def wrapper(ev):
-            try:
-                await func(ev)
-            except BaseException as exception:
-                logging.info(exception.with_traceback())
-                ERRORS.append(str(exception))
+            await func(ev)
 
         bot.add_event_handler(wrapper, telethon.events.NewMessage(**args))
         return func
