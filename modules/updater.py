@@ -27,5 +27,5 @@ async def generate_github_change_log():
 @command(pattern="update")
 async def _update(e):
     await e.reply("Updating...")
-    await e.reply(await generate_github_change_log())
+    await e.reply((await generate_github_change_log()))
     await update()

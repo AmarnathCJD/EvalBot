@@ -3542,8 +3542,9 @@ async def tele_docs(e):
     QUERY = ["", "", 0]
     for t in tl:
         for x in tl[t]:
-            if x.lower() == m.lower() or x.lower() in m.lower():
+            if x.lower() == m.lower():
                 QUERY = [x, t, tl[t].index(x)]
+                break
     if QUERY[0] == "":
         return await e.reply("No such method or type found!")
     url = "htp://tl.telethon.dev/" + tlu[QUERY[1] + "u"][QUERY[2]]
@@ -3561,6 +3562,6 @@ async def tele_docs(e):
                     other_types = x.find_next("table").text
             RESULT = f"**Methods returning this type:**\n{returning_types}\n\n**Methods accepting this type as input:**\n{methods_accepting}\n\n**Other types containing this type:**\n{other_types}"
             await e.reply(RESULT)
-            
+
            
 
