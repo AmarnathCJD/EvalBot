@@ -20,12 +20,12 @@ def execl():
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 
-def generate_github_change_log():
-    return bash("git log --pretty=format:'%s'")
+async def generate_github_change_log():
+    return str(await bash("git log --pretty=format:'%s'"))
 
 
 @command(pattern="update")
 async def _update(e):
     await e.reply("Updating...")
-    await e.reply(generate_github_change_log())
+    await e.reply(await generate_github_change_log())
     await update()
