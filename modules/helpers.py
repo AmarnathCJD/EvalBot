@@ -14,7 +14,11 @@ def command(**args):
 
     def decorator(func):
         async def wrapper(ev):
-            await func(ev)
+            try:
+                await func(ev)
+            except Exception as e:
+                ERRORS.append(e)
+                await ev.reply(str(e))
 
         bot.add_event_handler(wrapper, telethon.events.NewMessage(**args))
         return func
