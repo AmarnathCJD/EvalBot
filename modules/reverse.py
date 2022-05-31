@@ -3544,7 +3544,6 @@ async def tele_docs(e):
         for x in tl[t]:
             if x.lower() == m.lower() or x.lower() in m.lower():
                 QUERY = [x, t, tl[t].index(x)]
-                break
     if QUERY[0] == "":
         return await e.reply("No such method or type found!")
     url = "tl.telethon.dev/" + tlu[QUERY[1]+"u"][QUERY[2]]
