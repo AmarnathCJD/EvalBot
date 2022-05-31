@@ -48,7 +48,7 @@ async def _resize(e):
     os.remove(filename)
     os.remove(image)
 
-GIF_TO_WEBM = "ffmpeg -i {} -c vp9 -b:v 0 -crf 40 -t 00:00:03 {}"
+GIF_TO_WEBM = "ffmpeg -i {} -c vp9 -b:v 0 -crf 40 -vf scale=512:512 -t 00:00:03 {}"
 
 
 @command(pattern="webm")
@@ -58,7 +58,7 @@ async def _gif_to_webm(e):
         return await e.reply("Reply to any GIF")
     gif = await i.download_media()
     filename = "".join(gif.split(".")[:1]) + ".webm"
-    await bash(GIF_TO_WEBM.format(gif, filename))
+    r = await bash(GIF_TO_WEBM.format(gif, filename))
     await e.reply(file=filename)
     os.remove(filename)
     os.remove(gif)
