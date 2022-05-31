@@ -10,8 +10,7 @@ ERRORS = []
 
 
 def command(**args):
-    args["pattern"] = "^(?i)[?/!]" + args["pattern"] + \
-        "(?: |$|@ValerinaRobot)(.*)"
+    args["pattern"] = "^(?i)[?/!]" + args["pattern"] + "(?: |$|@ValerinaRobot)(.*)"
 
     def decorator(func):
         async def wrapper(ev):
@@ -67,8 +66,7 @@ async def get_user(e: telethon.events.NewMessage.Event):
     Args = e.text.split(maxsplit=2)
     if e.is_reply:
         user = (await e.get_reply_message()).sender
-        arg = (Args[1] + (Args[2] if len(Args) > 2 else "")
-               ) if len(Args) > 1 else ""
+        arg = (Args[1] + (Args[2] if len(Args) > 2 else "")) if len(Args) > 1 else ""
     else:
         if len(Args) == 1:
             await e.reply("No user specified")
