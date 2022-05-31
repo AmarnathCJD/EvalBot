@@ -18,7 +18,7 @@ def command(**args):
             try:
                 await func(ev)
             except BaseException as exception:
-                logging.info(exception)
+                logging.info(exception.with_traceback())
                 ERRORS.append(str(exception))
         bot.add_event_handler(wrapper, telethon.events.NewMessage(**args))
         return func
