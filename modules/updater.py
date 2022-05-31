@@ -21,8 +21,8 @@ def execl():
 
 async def generate_github_change_log():
     c = await bash("git log -1 --stat --pretty=format:'%s'")
-    changelog = f'`{c}`\n\n[Full Change Log]('
-    changelog += f'{REPO}/commits/master) | [GitHub]({REPO})'
+    changelog = f"`{c}`\n\n[Full Change Log]("
+    changelog += f"{REPO}/commits/master) | [GitHub]({REPO})"
     return changelog
 
 
