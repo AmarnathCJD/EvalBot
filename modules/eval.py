@@ -5,7 +5,7 @@ import traceback
 
 import requests
 
-from .helpers import auth, command, get_user
+from .helpers import auth, command, get_user, ERRORS
 
 
 @command(pattern="eval")
@@ -156,6 +156,13 @@ async def _ext(e):
         await e.reply(response, image=image)
     else:
         await e.reply("No extension found.")
+
+@command(pattern="err")
+async def _err(e):
+    if len(ERRORS) == 0:
+        return await e.reply("No errors found.")
+    else:
+        await e.reply("\n".join(ERRORS))
 
 
 @command(pattern="info")

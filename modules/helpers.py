@@ -1,17 +1,26 @@
 import asyncio
 from functools import wraps
+import logging
 
 import telethon
 
 from ._config import OWNER_ID, bot
 from ._db import AUTH
 
+ERRORS = []
+
 
 def command(**args):
     args["pattern"] = "^(?i)[?/!]" + args["pattern"] + "(?: |$|@ValerinaRobot)(.*)"
 
     def decorator(func):
-        bot.add_event_handler(func, telethon.events.NewMessage(**args))
+        async def wrapper(ev):
+            try:
+                await func(ev)
+            except BaseException as exception:
+                logging.info(exception)
+                ERRORS.append(str(exception))
+        bot.add_event_handler(wrapper, telethon.events.NewMessage(**args))
         return func
 
     return decorator
