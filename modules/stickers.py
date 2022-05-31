@@ -2,7 +2,7 @@ import os
 
 from PIL import Image
 
-from .helpers import command, get_reply_gif, get_reply_image, bash
+from .helpers import bash, command, get_reply_gif, get_reply_image
 
 
 def resize_image(image, size):
