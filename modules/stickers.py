@@ -49,7 +49,7 @@ async def _resize(e):
     os.remove(image)
 
 
-GIF_TO_WEBM = "ffmpeg -i '{}' -c vp9 -b:v 0 -crf 40 -vf scale=512:-1 -t 00:00:03 '{}'"
+GIF_TO_WEBM = "ffmpeg -i {} -c vp9 -b:v 0 -crf 40 -vf scale=512:-1 -t 00:00:03 {}"
 VID_DIMENTIONS = "ffprobe -v error -select_streams v -show_entries stream=width,height -of csv=p=0:s=x {}"
 
 
