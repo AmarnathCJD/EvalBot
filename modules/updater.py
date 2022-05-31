@@ -30,5 +30,5 @@ async def generate_github_change_log():
 async def _update(e):
     await e.reply("Updating...")
     await update()
-    await e.reply((await generate_github_change_log()))
+    await e.reply((await generate_github_change_log()), link_preview=False)
     execl()
