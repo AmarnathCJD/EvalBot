@@ -3562,6 +3562,3 @@ async def tele_docs(e):
                     other_types = x.find_next("table").text
             RESULT = f"**Methods returning this type:**\n{returning_types}\n\n**Methods accepting this type as input:**\n{methods_accepting}\n\n**Other types containing this type:**\n{other_types}"
             await e.reply(RESULT)
-
-           
-
