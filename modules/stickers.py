@@ -49,8 +49,8 @@ async def _resize(e):
     os.remove(image)
 
 
-GIF_TO_WEBM = "ffmpeg -i {} -c vp9 -b:v 0 -crf 40 -vf scale={}:{} -t 00:00:03 {}"
-VID_DIMENTIONS = "ffprobe -v error -show_entries stream=width,height -of default=noprint_wrappers=1 {}"
+GIF_TO_WEBM = "ffmpeg -i '{}' -c vp9 -b:v 0 -crf 40 -vf scale={}:{} -t 00:00:03 '{}'"
+VID_DIMENTIONS = "ffprobe -v error -show_entries stream=width,height -of default=noprint_wrappers=1 '{}'"
 
 
 @command(pattern="webm")
