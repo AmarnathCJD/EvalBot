@@ -3546,5 +3546,21 @@ async def tele_docs(e):
                 QUERY = [x, t, tl[t].index(x)]
     if QUERY[0] == "":
         return await e.reply("No such method or type found!")
-    url = "tl.telethon.dev/" + tlu[QUERY[1] + "u"][QUERY[2]]
-    await e.reply(str(url))
+    url = "htp://tl.telethon.dev/" + tlu[QUERY[1] + "u"][QUERY[2]]
+    r = requests.get(url)
+    if r.status_code == 200:
+        soup = BeautifulSoup(r.text, "html.parser")
+        if QUERY[1] == "types":
+            start = soup.find_all("h3")
+            for x in start:
+                if x.text == "Methods returning this type":
+                    returning_types = x.find_next("table").text
+                elif x.text == "Methods accepting this type as input":
+                    methods_accepting = x.find_next("table").text
+                elif x.text == "Other types containing this type":
+                    other_types = x.find_next("table").text
+            RESULT = f"**Methods returning this type:**\n{returning_types}\n\n**Methods accepting this type as input:**\n{methods_accepting}\n\n**Other types containing this type:**\n{other_types}"
+            await e.reply(RESULT)
+            
+           
+

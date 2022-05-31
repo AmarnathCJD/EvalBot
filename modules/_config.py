@@ -1,10 +1,10 @@
 import logging
-import os
-from os import environ, getenv
+from os import environ, getenv, listdir, path
 
 from dotenv import load_dotenv
 from pymongo import MongoClient, errors
 from telethon import TelegramClient
+from importlib import import_module
 
 load_dotenv()
 
@@ -28,7 +28,7 @@ for key in ["API_KEY", "API_HASH", "TOKEN", "OWNER_ID", "MONGO_URI"]:
             print("\nExiting...")
             exit(1)
         environ[str(key)] = value
-    if not os.path.exists(".env"):
+    if not path.exists(".env"):
         with open(".env", "w") as f:
             for key in ["API_KEY", "API_HASH", "TOKEN", "OWNER_ID", "MONGO_URI"]:
                 if key in environ:
@@ -43,3 +43,11 @@ except errors.ServerSelectionTimeoutError:
     print("Failure to connect to MongoDB")
 
 DB = db.get_database("bot")
+
+def __load_modules():
+    for module in listdir("./modules"):
+        if module.endswith(".py") and not module.startswith("_"):
+            import_name = f"modules.{module[:-3]}"
+            import_module(import_name, module)
+            print(f"Loaded {import_name}")
+
