@@ -21,7 +21,7 @@ def execl():
 
 
 async def generate_github_change_log():
-    return str(await bash("git log --pretty=format:'%s'"))
+    return str(await bash("git log -1 --stat --pretty=format:'%s'"))
 
 
 @command(pattern="update")
