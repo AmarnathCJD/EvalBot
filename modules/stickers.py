@@ -72,7 +72,13 @@ async def _gif_to_webm(e):
     s = await bash(GIF_TO_WEBM.format(gif, v[0], v[1], filename))
     with open("resp.txt", "w") as f:
         f.write(s)
-        await e.reply(file="resp.txt")
+    await e.reply(file="resp.txt")
     await e.reply(file=filename)
     os.remove(filename)
     os.remove(gif)
+
+WATERMARK = "ffmpeg -i '{}' -i '{}' -filter_complex 'overlay=10:10' -c:v libvpx-vp9 -crf 10 -b:v 0 -c:a libopus -b:a 128k '{}'"
+
+@command(pattern="watermark")
+async def _watermark(e):
+    print(e.text)
