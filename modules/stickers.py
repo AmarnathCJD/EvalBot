@@ -2,7 +2,7 @@ import os
 
 from PIL import Image
 
-from .helpers import bash, command, get_reply_gif, get_reply_image
+from .helpers import bash, command, get_reply_gif, get_reply_image, get_reply_video
 
 
 def resize_image(image, size):
@@ -61,7 +61,6 @@ async def _gif_to_webm(e):
     gif = await i.download_media()
     filename = "".join(gif.split(".")[:1]) + ".webm"
     v = await bash(VID_DIMENTIONS.format(gif))
-    await e.reply(v)
     v = v.split("x")
     v = (int(v[0]), int(v[1]))
     ratio = v[0] / v[1]
@@ -69,18 +68,31 @@ async def _gif_to_webm(e):
         v = (int(512 * ratio), 512)
     else:
         v = (512, int(512 / ratio))
-    s = await bash(GIF_TO_WEBM.format(gif, filename))
-    with open("resp.txt", "w") as f:
-        f.write(s)
-    await e.reply(file="resp.txt")
+    await bash(GIF_TO_WEBM.format(gif, filename))
     await e.reply(file=filename)
     os.remove(filename)
     os.remove(gif)
 
 
-WATERMARK = "ffmpeg -i '{}' -i '{}' -filter_complex 'overlay=10:10' -c:v libvpx-vp9 -crf 10 -b:v 0 -c:a libopus -b:a 128k '{}'"
+WATERMARK = '''ffmpeg -i {}
+ -vf "drawtext=text='{}':x=10:y=H-th-10:
+               fontcolor=white:
+               shadowcolor=black:shadowx=5:shadowy=5"
+{}'''
 
 
 @command(pattern="watermark")
 async def _watermark(e):
-    print(e.text)
+    try:
+        text = e.text.split(" ")[1]
+    except:
+        return await e.reply("Usage: `watermark <text>`")
+    i = await get_reply_video(e)
+    if not i:
+        return await e.reply("Reply to any video")
+    video = await i.download_media()
+    filename = "watermarked_" + video
+    await bash(WATERMARK.format(video, text, filename))
+    await e.reply(file=filename)
+    os.remove(filename)
+    os.remove(video)
