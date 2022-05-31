@@ -1,6 +1,6 @@
 import asyncio
-from functools import wraps
 import logging
+from functools import wraps
 
 import telethon
 
@@ -20,6 +20,7 @@ def command(**args):
             except BaseException as exception:
                 logging.info(exception.with_traceback())
                 ERRORS.append(str(exception))
+
         bot.add_event_handler(wrapper, telethon.events.NewMessage(**args))
         return func
 
