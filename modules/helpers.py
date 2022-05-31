@@ -134,10 +134,10 @@ async def get_reply_image(v):
         return None
     if isinstance(r.media, telethon.tl.types.MessageMediaDocument):
         if r.media.document.mime_type.split("/")[0] == "image":
-            return r.media
+            return r
         else:
             return None
     elif isinstance(r.media, telethon.tl.types.MessageMediaPhoto):
-        return r.media
+        return r
     else:
         return None
