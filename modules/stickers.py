@@ -61,6 +61,7 @@ async def _gif_to_webm(e):
     gif = await i.download_media()
     filename = "".join(gif.split(".")[:1]) + ".webm"
     v = await bash(VID_DIMENTIONS.format(gif))
+    msg = await e.reply("Converting...")
     v = v.split("x")
     v = (int(v[0]), int(v[1]))
     ratio = v[0] / v[1]
@@ -70,6 +71,7 @@ async def _gif_to_webm(e):
         v = (512, int(512 / ratio))
     await bash(GIF_TO_WEBM.format(gif, filename))
     await e.reply(file=filename)
+    await msg.delete()
     os.remove(filename)
     os.remove(gif)
 
