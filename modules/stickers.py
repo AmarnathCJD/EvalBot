@@ -74,11 +74,11 @@ async def _gif_to_webm(e):
     os.remove(gif)
 
 
-WATERMARK = '''ffmpeg -i {}
+WATERMARK = """ffmpeg -i {}
  -vf "drawtext=text='{}':x=10:y=H-th-10:
                fontcolor=white:
                shadowcolor=black:shadowx=5:shadowy=5"
-{}'''
+{}"""
 
 
 @command(pattern="watermark")
