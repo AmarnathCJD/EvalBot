@@ -10,7 +10,8 @@ ERRORS = []
 
 
 def command(**args):
-    args["pattern"] = "^(?i)[?/!]" + args["pattern"] + "(?: |$|@ValerinaRobot)(.*)"
+    args["pattern"] = "^(?i)[?/!]" + args["pattern"] + \
+        "(?: |$|@ValerinaRobot)(.*)"
 
     def decorator(func):
         async def wrapper(ev):
@@ -66,7 +67,8 @@ async def get_user(e: telethon.events.NewMessage.Event):
     Args = e.text.split(maxsplit=2)
     if e.is_reply:
         user = (await e.get_reply_message()).sender
-        arg = (Args[1] + (Args[2] if len(Args) > 2 else "")) if len(Args) > 1 else ""
+        arg = (Args[1] + (Args[2] if len(Args) > 2 else "")
+               ) if len(Args) > 1 else ""
     else:
         if len(Args) == 1:
             await e.reply("No user specified")
@@ -120,3 +122,20 @@ async def bash(code):
     stdout, stderr = await process.communicate()
     result = str(stdout.decode().strip()) + str(stderr.decode().strip())
     return result
+
+
+async def get_reply_image(v):
+    if not v.reply_to:
+        return None
+    r = await v.get_reply_message()
+    if not r.media:
+        return None
+    if isinstance(r.media, telethon.tl.types.MessageMediaDocument):
+        if r.media.document.mime_type.split("/")[0] == "image":
+            return r.media.document
+        else:
+            return None
+    elif isinstance(r.media, telethon.tl.types.MessageMediaPhoto):
+        return r.media.photo
+    else:
+        return None
