@@ -3547,7 +3547,7 @@ async def tele_docs(e):
                 break
     if QUERY[0] == "":
         return await e.reply("No such method or type found!")
-    url = "htp://tl.telethon.dev/" + tlu[QUERY[1] + "u"][QUERY[2]]
+    url = "http://tl.telethon.dev/" + tlu[QUERY[1] + "u"][QUERY[2]]
     r = requests.get(url)
     if r.status_code == 200:
         soup = BeautifulSoup(r.text, "html.parser")
