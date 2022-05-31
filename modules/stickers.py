@@ -1,4 +1,5 @@
 import os
+import io
 
 from PIL import Image
 
@@ -94,7 +95,10 @@ async def _watermark(e):
         return await e.reply("Reply to any video")
     video = await i.download_media()
     filename = "watermarked_" + video
-    await bash(WATERMARK.format(video, text, filename))
+    out = await bash(WATERMARK.format(video, text, filename))
+    with io.BytesIO(out.encode()) as f:
+        f.name = "out.txt"
+        await e.reply(file=f)
     await e.reply(file=filename)
     os.remove(filename)
     os.remove(video)
