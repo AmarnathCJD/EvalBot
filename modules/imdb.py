@@ -1,9 +1,10 @@
+import os
+
 from bs4 import BeautifulSoup
 from requests import get
-import os
-from .helpers import command
+
 from ._db import DB
-from urllib.parse import quote
+from .helpers import command
 
 BASE_URL = "http://www.imdb.com"
 
@@ -192,34 +193,46 @@ async def imdb(e):
     """
     await x.edit(MOVIE)
 
+
 series = DB.series
 
 IMDB_API = os.getenv("IMDB_KEY")
 
+
 def add_series(user_id, series_id, name, watchtime):
-    series.update_one({"user_id": user_id}, {"$push": {"series": {"series_id": series_id, "name": name, "watchtime": watchtime}}}, upsert=True)
+    series.update_one(
+        {"user_id": user_id},
+        {
+            "$push": {
+                "series": {"series_id": series_id, "name": name, "watchtime": watchtime}
+            }
+        },
+        upsert=True,
+    )
+
 
 def get_all_series(user_id):
     q = series.find_one({"user_id": user_id})
     if q:
-       return q.get("series")
+        return q.get("series")
+
 
 @command(pattern="watched")
 async def _watched(e):
- try:
-  query = e.text.split(None, maxsplit=1)[1]
- except IndexError:
-  return await display_watched(e)
- params = {
-"api_key": IMDB_API,
-"query": query
-}
- r = get("https://api.themoviedb.org/3/search/tv", params=params).json()
- if len(r.get("results")) == 0:
-   return await e.reply("Series/Movie not found in DATABASE.")
- result_id = r["results"][0]["id"]
- result = get("https://api.themoviedb.org/3/tv/{}".format(result_id), params={"api_key": IMDB_API}).json()
- watchtime = int(result.get("episode_run_time")[0]) * int(result.get("number_of_episodes"))
- await e.reply(str(watchtime)+result["name"])
- 
- 
+    try:
+        query = e.text.split(None, maxsplit=1)[1]
+    except IndexError:
+        return await display_watched(e)
+    params = {"api_key": IMDB_API, "query": query}
+    r = get("https://api.themoviedb.org/3/search/tv", params=params).json()
+    if len(r.get("results")) == 0:
+        return await e.reply("Series/Movie not found in DATABASE.")
+    result_id = r["results"][0]["id"]
+    result = get(
+        "https://api.themoviedb.org/3/tv/{}".format(result_id),
+        params={"api_key": IMDB_API},
+    ).json()
+    watchtime = int(result.get("episode_run_time")[0]) * int(
+        result.get("number_of_episodes")
+    )
+    await e.reply(str(watchtime) + result["name"])
