@@ -69,7 +69,7 @@ async def _gif_to_webm(e):
         v = (int(512 * ratio), 512)
     else:
         v = (512, int(512 / ratio))
-    s = await bash(GIF_TO_WEBM.format(gif, v[0], v[1], filename))
+    s = await bash(GIF_TO_WEBM.format(gif, filename))
     with open("resp.txt", "w") as f:
         f.write(s)
     await e.reply(file="resp.txt")
