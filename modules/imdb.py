@@ -236,9 +236,11 @@ async def _watched(e):
         "https://api.themoviedb.org/3/{}/{}".format(DIFF, result_id),
         params={"api_key": IMDB_API},
     ).json()
-    watchtime = int(result.get("episode_run_time")[0]) * int(
-        result.get("number_of_episodes")
-    ) if DIFF == "tv" else result.get("runtime")
+    watchtime = (
+        int(result.get("episode_run_time")[0]) * int(result.get("number_of_episodes"))
+        if DIFF == "tv"
+        else result.get("runtime")
+    )
     await e.reply(
         "**{}** added to watchedlist.\n**WATCHTIME:** {:.2f} hrs\n**Episodes:** {}\n**Rating:** {}\n**TagLine:** {}".format(
             result.get("name"),
