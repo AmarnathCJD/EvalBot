@@ -48,8 +48,10 @@ async def _resize(e):
     os.remove(filename)
     os.remove(image)
 
+
 GIF_TO_WEBM = "ffmpeg -i {} -c vp9 -b:v 0 -crf 40 -vf scale={}:{} -t 00:00:03 {}"
 VID_DIMENTIONS = "ffprobe -v error -show_entries stream=width,height -of default=noprint_wrappers=1 {}"
+
 
 @command(pattern="webm")
 async def _gif_to_webm(e):
@@ -66,7 +68,7 @@ async def _gif_to_webm(e):
         v = (int(512 * ratio), 512)
     else:
         v = (512, int(512 / ratio))
-    r = await bash(GIF_TO_WEBM.format(gif, v[0], v[1], filename))
+    await bash(GIF_TO_WEBM.format(gif, v[0], v[1], filename))
     await e.reply(file=filename)
     os.remove(filename)
     os.remove(gif)
