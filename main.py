@@ -1,4 +1,4 @@
-from modules._config import TOKEN, bot, __load_modules
+from modules._config import TOKEN, __load_modules, bot
 
 bot.start(bot_token=TOKEN)
 
