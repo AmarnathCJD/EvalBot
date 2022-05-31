@@ -235,4 +235,12 @@ async def _watched(e):
     watchtime = int(result.get("episode_run_time")[0]) * int(
         result.get("number_of_episodes")
     )
-    await e.reply("**{}** added to watchedlist.\n**WATCHTIME:** {}\nEpisodes: {}\nRating: {}\nTagLine: {}\nPlot: {}".format(result.get("name"), str(watchtime/60) + 'hrs', result.get("number_of_episodes"), result.get('tagline'), result.get("vote_average")))
+    await e.reply(
+        "**{}** added to watchedlist.\n**WATCHTIME:** {}\nEpisodes: {}\nRating: {}\nTagLine: {}\nPlot: {}".format(
+            result.get("name"),
+            str(watchtime / 60) + "hrs",
+            result.get("number_of_episodes"),
+            result.get("tagline"),
+            result.get("vote_average"),
+        )
+    )
