@@ -141,3 +141,9 @@ async def get_reply_image(v):
         return r
     else:
         return None
+
+async def get_reply_gif(e):
+    r = await e.get_reply_message()
+    if not r.gif:
+        return None
+    return r

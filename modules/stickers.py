@@ -2,7 +2,7 @@ import os
 
 from PIL import Image
 
-from .helpers import command, get_reply_image
+from .helpers import command, get_reply_gif, get_reply_image, bash
 
 
 def resize_image(image, size):
@@ -47,3 +47,18 @@ async def _resize(e):
     await e.reply(file=filename)
     os.remove(filename)
     os.remove(image)
+
+GIF_TO_WEBM = "ffmpeg -i {} -c vp9 -b:v 0 -crf 40 -t 00:00:03 {}"
+
+
+@command(pattern="webm")
+async def _gif_to_webm(e):
+    i = await get_reply_gif(e)
+    if not i:
+        return await e.reply("Reply to any GIF")
+    gif = await i.download_media()
+    filename = "".join(gif.split(".")[:1]) + ".webm"
+    await bash(GIF_TO_WEBM.format(gif, filename))
+    await e.reply(file=filename)
+    os.remove(filename)
+    os.remove(gif)
