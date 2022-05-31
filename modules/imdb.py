@@ -225,21 +225,25 @@ async def _watched(e):
         return await display_watched(e)
     params = {"api_key": IMDB_API, "query": query}
     r = get("https://api.themoviedb.org/3/search/tv", params=params).json()
+    DIFF = "tv"
     if len(r.get("results")) == 0:
-        return await e.reply("Series/Movie not found in DATABASE.")
+        r = get("https://api.themoviedb.org/3/search/movie", params=params).json()
+        if len(r.get("results")) == 0:
+            return await e.reply("Series/Movie not found in DATABASE.")
+        DIFF = "movie"
     result_id = r["results"][0]["id"]
     result = get(
-        "https://api.themoviedb.org/3/tv/{}".format(result_id),
+        "https://api.themoviedb.org/3/{}/{}".format(DIFF, result_id),
         params={"api_key": IMDB_API},
     ).json()
     watchtime = int(result.get("episode_run_time")[0]) * int(
         result.get("number_of_episodes")
-    )
+    ) if DIFF == "tv" else result.get("runtime")
     await e.reply(
-        "**{}** added to watchedlist.\n**WATCHTIME:** {:.2f} hrs\nEpisodes: {}\nRating: {}\nTagLine: {}".format(
+        "**{}** added to watchedlist.\n**WATCHTIME:** {:.2f} hrs\n**Episodes:** {}\n**Rating:** {}\n**TagLine:** {}".format(
             result.get("name"),
             watchtime / 60,
-            result.get("number_of_episodes"),
+            result.get("number_of_episodes") if DIFF == "tv" else 1,
             result.get("vote_average"),
             result.get("tagline"),
         )
