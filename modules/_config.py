@@ -1,10 +1,10 @@
 import logging
+from importlib import import_module
 from os import environ, getenv, listdir, path
 
 from dotenv import load_dotenv
 from pymongo import MongoClient, errors
 from telethon import TelegramClient
-from importlib import import_module
 
 load_dotenv()
 
@@ -44,10 +44,10 @@ except errors.ServerSelectionTimeoutError:
 
 DB = db.get_database("bot")
 
+
 def __load_modules():
     for module in listdir("./modules"):
         if module.endswith(".py") and not module.startswith("_"):
             import_name = f"modules.{module[:-3]}"
             import_module(import_name, module)
             print(f"Loaded {import_name}")
-
