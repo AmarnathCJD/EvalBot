@@ -23,12 +23,11 @@ async def generate_github_change_log():
     c = await bash("git log -1 --stat --pretty=format:'%s'")
     changelog = f"`{c}`\n\n[Full Change Log]("
     changelog += f"{REPO}/commits/master) | [GitHub]({REPO})"
-    return changelog
+    return changelog + "\nupdating..."
 
 
 @command(pattern="update")
 async def _update(e):
-    await e.reply("Updating...")
     await update()
     await e.reply((await generate_github_change_log()), link_preview=False)
     execl()
