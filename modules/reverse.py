@@ -3547,5 +3547,5 @@ async def tele_docs(e):
                 break
     if QUERY[0] == "":
         return await e.reply("No such method or type found!")
-    url = "tl.telethon.dev/" + tlu[QUERY[1]][QUERY[2]]
+    url = "tl.telethon.dev/" + tlu[QUERY[1]+"u"][QUERY[2]]
     await e.reply(str(url))
