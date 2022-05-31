@@ -77,7 +77,9 @@ async def _gif_to_webm(e):
     os.remove(filename)
     os.remove(gif)
 
+
 WATERMARK = "ffmpeg -i '{}' -i '{}' -filter_complex 'overlay=10:10' -c:v libvpx-vp9 -crf 10 -b:v 0 -c:a libopus -b:a 128k '{}'"
+
 
 @command(pattern="watermark")
 async def _watermark(e):
