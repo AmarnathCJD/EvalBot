@@ -1,5 +1,5 @@
-from urllib.parse import quote
 import os
+from urllib.parse import quote
 
 from bs4 import BeautifulSoup
 from requests import get
@@ -269,7 +269,8 @@ async def display_tv_series(e, res):
 def program_type(q: str):
     firstLetter = q[0]
     url = "https://v2.sg.media-imdb.com/suggestion/titles/{}/{}.json".format(
-        firstLetter.lower(), quote(q))
+        firstLetter.lower(), quote(q)
+    )
     r = get(url).json()
     if r.get("d"):
         r = r["d"][0]["q"]
@@ -282,4 +283,4 @@ def program_type(q: str):
 
 def get_watchtime(runtime, episodes):
     w = int(runtime) * int(episodes)
-    return '{.hours}h {.minutes}m'.format(divmod(w, 60))
+    return "{.hours}h {.minutes}m".format(divmod(w, 60))
