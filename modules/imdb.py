@@ -1,3 +1,4 @@
+from operator import ge
 from urllib.parse import quote
 import os
 
@@ -226,41 +227,52 @@ async def _watched(e):
         query = e.text.split(None, maxsplit=1)[1]
     except IndexError:
         return await display_watched(e)
-    params = {"api_key": IMDB_API, "query": query}
-    r = get("https://api.themoviedb.org/3/search/tv", params=params).json()
-    DIFF = "tv"
-    if len(r.get("results")) == 0:
-        r = get("https://api.themoviedb.org/3/search/movie",
-                params=params).json()
-        if len(r.get("results")) == 0:
-            return await e.reply("Series/Movie not found in DATABASE.")
-        DIFF = "movie"
-    result_id = r["results"][0]["id"]
-    result = get(
-        "https://api.themoviedb.org/3/{}/{}".format(DIFF, result_id),
-        params={"api_key": IMDB_API},
-    ).json()
-    watchtime = (
-        int(result.get("episode_run_time")[0]) *
-        int(result.get("number_of_episodes"))
-        if DIFF == "tv"
-        else result.get("runtime")
-    )
+    params = {"api_key": IMDB_API}
+    params["query"] = query
+    _type = program_type(query)
+    r = get(f"https://api.themoviedb.org/3/search/{_type}", params=params)
+    if r.status_code != 200:
+        return await e.reply(f"`Error: {r.status_code}`")
+    res = r.json()
+    if len(res["results"]) == 0:
+        return await e.reply("`No results found!`")
+    if _type == "tv":
+        return await display_tv_series(e, res)
+    else:
+        return await display_movies(e, res)
+
+
+async def display_tv_series(e, res):
+    result_id = res["results"][0]["id"]
+    params = {"api_key": IMDB_API}
+    r = get(f"https://api.themoviedb.org/3/tv/{result_id}", params=params)
+    if r.status_code != 200:
+        return await e.reply(f"`Error: {r.status_code}`")
+    res = r.json()
+    if res["number_of_seasons"] == 0:
+        return await e.reply("`No seasons found!`")
+    seasons = res["number_of_seasons"]
+    runtime = res["episode_run_time"][0]
+    episodes = res["number_of_episodes"]
+    tagline = res["tagline"]
+    if tagline:
+        tagline = f"**Tagline**: {tagline}"
+    else:
+        tagline = ""
+    status = f"**Status**: {res['status']}" if res["status"] else ""
+    seasons = f"**Seasons**: {seasons}"
+    episodes = f"**Episodes**: {episodes}"
+    runtime = f"**Runtime**: {runtime} hrs"
+    watchtime = f"**Watchtime**: {get_watchtime(runtime, episodes)}"
     await e.reply(
-        "**{}** added to watchedlist.\n**WATCHTIME:** {:.2f} hrs\n**Episodes:** {}\n**Rating:** {}\n**TagLine:** {}".format(
-            result.get("name"),
-            watchtime / 60,
-            result.get("number_of_episodes") if DIFF == "tv" else 1,
-            result.get("vote_average"),
-            result.get("tagline"),
-        )
+        f"**{res['name']}**\n{tagline}\n{status}\n{seasons}\n{episodes}\n{runtime}\n{watchtime}"
     )
 
 
 def program_type(q: str):
     firstLetter = q[0]
     url = "https://v2.sg.media-imdb.com/suggestion/titles/{}/{}.json".format(
-        firstLetter, quote(q))
+        firstLetter.lower(), quote(q))
     r = get(url).json()
     if r.get("d"):
         r = r["d"][0]["q"]
@@ -268,3 +280,9 @@ def program_type(q: str):
             return "tv"
         elif r == "feature":
             return "movie"
+    return "movie"
+
+
+def get_watchtime(runtime, episodes):
+    w = int(runtime) * int(episodes)
+    return '{.hours}h {.minutes}m'.format(divmod(w, 60))
