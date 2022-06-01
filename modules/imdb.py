@@ -353,7 +353,7 @@ def get_watchtime(runtime, episodes=1, isint=False):
 
 def format_time(time):
     months = time // (30 * 24 * 60)
-    days = (time % (30 * 24 * 60)) // 24 * 60
+    days = (time % (24 * 60)) // 24 * 60
     hours = (time % (24 * 60)) // 60
     minutes = time % 60
     if months > 0:
@@ -380,7 +380,7 @@ async def display_watched(e):
             q, i["name"], format_time(i["watchtime"])
         )
         wt += int(i["watchtime"])
-    text += f"\n<b>Total Watchtime<b>: {format_time(wt)} \n"
+    text += f"\n<b>Total Watchtime</b>: {format_time(wt)} \n"
     await e.reply(text, parse_mode="html")
 
 
