@@ -353,7 +353,7 @@ def get_watchtime(runtime, episodes=1, isint=False):
 
 def format_time(time):
     d, r = divmod(time, (60 * 24))
-    h = int(h)
+    h = int(r)
     _, r = divmod(r, 60)
     m = r // 60
     if d > 0:
