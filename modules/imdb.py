@@ -224,7 +224,13 @@ async def _watched(e):
         query = e.text.split(None, maxsplit=1)[1]
     except IndexError:
         return await display_watched(e)
-    params = {"api_key": IMDB_API, "language": "en-US", "query": query, "include_adult": "true", "page": "1"}
+    params = {
+        "api_key": IMDB_API,
+        "language": "en-US",
+        "query": query,
+        "include_adult": "true",
+        "page": "1",
+    }
     r = get("https://api.themoviedb.org/3/search/multi", params=params)
     if r.status_code != 200:
         return await e.edit("`Something went wrong.`")
