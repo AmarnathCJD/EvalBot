@@ -1,4 +1,5 @@
 import os
+from platform import release
 from urllib.parse import quote
 
 from bs4 import BeautifulSoup
@@ -135,7 +136,8 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(
+        class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -161,7 +163,8 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find(
+            "a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -260,7 +263,7 @@ async def display_tv_series(e, result_id):
         tagline = f"       -`{tagline}`"
     else:
         tagline = ""
-    watchtime = f"**Watchtime**: {get_watchtime(runtime, episodes)}"
+    watchtime = f"**Watchtime**: +{get_watchtime(runtime, episodes)}"
     status = f"**Status**: {res['status']}" if res["status"] else ""
     seasons = f"**S**: {seasons} | **E**: {episodes}"
     POSTER = f"https://image.tmdb.org/t/p/original{res['poster_path']}"
@@ -270,19 +273,28 @@ async def display_tv_series(e, result_id):
     )
 
 
-def program_type(q: str):
-    firstLetter = q[0]
-    url = "https://v2.sg.media-imdb.com/suggestion/titles/{}/{}.json".format(
-        firstLetter.lower(), quote(q)
+async def display_movie(e, result_id):
+    params = {"api_key": IMDB_API}
+    r = get(f"https://api.themoviedb.org/3/movie/{result_id}", params=params)
+    if r.status_code != 200:
+        return await e.reply(f"`Error: {r.status_code}`")
+    res = r.json()
+    runtime = res["runtime"]
+    tagline = res["tagline"]
+    imdb_id = res["imdb_id"]
+    release_date = res["release_date"]
+    status = res["status"]
+    if tagline:
+        tagline = f"       -`{tagline}`"
+    else:
+        tagline = ""
+    watchtime = f"**Watchtime**: +{get_watchtime(runtime, 1)}"
+    status = f"**Status**: {res['status']}" if res["status"] else ""
+    POSTER = f"https://image.tmdb.org/t/p/original{res['poster_path']}"
+    await e.reply(
+        f"**Added __{res['title']}__  to watched List**\n{tagline}\n{status}\n{watchtime}",
+        file=POSTER
     )
-    r = get(url).json()
-    if r.get("d"):
-        r = r["d"][0]["q"]
-        if r.lower().startswith("tv"):
-            return "tv"
-        elif r == "feature":
-            return "movie"
-    return "movie"
 
 
 def get_watchtime(runtime, episodes):
