@@ -368,9 +368,11 @@ async def display_watched(e):
         return await e.reply("`You haven't watched any series yet!`")
     text = "<u><b>Watched Series</b></u>\n"
     wt = 0
+    q = 0
     for i in series:
-        text += "> <b><i>{}</i></b> ({})\n".format(
-            i["name"], format_time(i["watchtime"])
+        q += 1
+        text += "{}.> <b><i>{}</i></b> ({})\n".format(
+            q, i["name"], format_time(i["watchtime"])
         )
         wt += int(i["watchtime"])
     text += f"\n<b>Total Watchtime<b>: {format_time(wt)} \n"
