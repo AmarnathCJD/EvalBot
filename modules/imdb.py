@@ -237,6 +237,8 @@ async def _watched(e):
     result = data["results"][0]
     if result["media_type"] == "tv":
         return await display_tv_series(e, result["id"])
+    else:
+        return await display_movie(e, result["id"])
 
 
 async def display_tv_series(e, result_id):
@@ -260,7 +262,7 @@ async def display_tv_series(e, result_id):
     seasons = f"**Seasons**: {seasons}"
     episodes = f"**Episodes**: {episodes}"
     await e.reply(
-        f"Added **{res['name']}**  to watched\n{tagline}\n{status}\n{seasons}\n{episodes}\n{watchtime}"
+        f"**Added __{res['name']}__  to watched List**\n{tagline}\n{status}\n{seasons}\n{episodes}\n{watchtime}"
     )
 
 
