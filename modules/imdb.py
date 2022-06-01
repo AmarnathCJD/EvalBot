@@ -355,9 +355,18 @@ def get_watchtime(runtime, episodes=1, isint=False):
 
 
 def format_time(time):
-    hours = time // 60
+    months = time // (30 * 24 * 60)
+    days = (time % (30 * 24 * 60)) // 24 * 60
+    hours = (time % (24 * 60)) // 60
     minutes = time % 60
-    return f"{hours}h {minutes}m"
+    if months > 0:
+        return f"{months} months, {days} d, {hours} h, {minutes} min"
+    elif days > 0:
+        return f"{days} d, {hours} h, {minutes} min"
+    elif hours > 0:
+        return f"{hours} h, {minutes} min"
+    else:
+        return f"{minutes} min"
 
 
 async def display_watched(e):
