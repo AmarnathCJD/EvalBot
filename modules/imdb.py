@@ -1,5 +1,5 @@
-from urllib.parse import quote
 import os
+from urllib.parse import quote
 
 from bs4 import BeautifulSoup
 from requests import get
@@ -135,8 +135,7 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(
-        class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -162,8 +161,7 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find(
-            "a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -230,8 +228,7 @@ async def _watched(e):
     r = get("https://api.themoviedb.org/3/search/tv", params=params).json()
     DIFF = "tv"
     if len(r.get("results")) == 0:
-        r = get("https://api.themoviedb.org/3/search/movie",
-                params=params).json()
+        r = get("https://api.themoviedb.org/3/search/movie", params=params).json()
         if len(r.get("results")) == 0:
             return await e.reply("Series/Movie not found in DATABASE.")
         DIFF = "movie"
@@ -241,8 +238,7 @@ async def _watched(e):
         params={"api_key": IMDB_API},
     ).json()
     watchtime = (
-        int(result.get("episode_run_time")[0]) *
-        int(result.get("number_of_episodes"))
+        int(result.get("episode_run_time")[0]) * int(result.get("number_of_episodes"))
         if DIFF == "tv"
         else result.get("runtime")
     )
@@ -260,7 +256,8 @@ async def _watched(e):
 def program_type(q: str):
     firstLetter = q[0]
     url = "https://v2.sg.media-imdb.com/suggestion/titles/{}/{}.json".format(
-        firstLetter, quote(q))
+        firstLetter, quote(q)
+    )
     r = get(url).json()
     if r.get("d"):
         r = r["d"][0]["q"]
