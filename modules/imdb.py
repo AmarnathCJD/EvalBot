@@ -3,6 +3,7 @@ from platform import release
 from urllib.parse import quote
 
 from bs4 import BeautifulSoup
+from numpy import imag
 from requests import get
 
 from ._db import DB
@@ -290,10 +291,12 @@ async def display_movie(e, result_id):
         tagline = ""
     watchtime = f"**Watchtime**: +{get_watchtime(runtime, 1)}"
     status = f"**Status**: {res['status']}" if res["status"] else ""
+    release_date = f"**Release Date**: {release_date}" if release_date else ""
+    imdb_id = f"**IMDB ID**: `{imdb_id}`" if imdb_id else ""
     POSTER = f"https://image.tmdb.org/t/p/original{res['poster_path']}"
     await e.reply(
-        f"**Added __{res['title']}__  to watched List**\n{tagline}\n{status}\n{watchtime}",
-        file=POSTER
+        f"**Added __{res['title']}__  to watched List**\n{tagline}\n{status}\n{release_date}\n{imdb_id}\n{watchtime}",
+        file=POSTER,
     )
 
 
