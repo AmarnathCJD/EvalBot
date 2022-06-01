@@ -381,7 +381,7 @@ async def display_watched(e):
         )
         wt += int(i["watchtime"])
     text += f"\n<b>Total Watchtime</b>: {format_time(wt)} \n"
-    await e.reply(text, parse_mode="html")
+    await e.reply(text, parse_mode="html", reply_to=e.reply_to_msg_id or e.id)
 
 
 @command(pattern="rmwatched")
