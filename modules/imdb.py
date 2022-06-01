@@ -1,7 +1,6 @@
 import os
 
 from bs4 import BeautifulSoup
-from numpy import imag
 from requests import get
 
 from ._db import DB
