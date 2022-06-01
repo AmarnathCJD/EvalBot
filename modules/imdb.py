@@ -1,4 +1,3 @@
-from ast import pattern
 import os
 from tkinter import Button
 
@@ -136,8 +135,7 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(
-        class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -163,8 +161,7 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find(
-            "a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -287,8 +284,7 @@ async def display_tv_series(e, result_id):
     else:
         tagline = ""
     s = add_series(
-        e.chat_id, result_id, res["name"], get_watchtime(
-            runtime, episodes, True)
+        e.chat_id, result_id, res["name"], get_watchtime(runtime, episodes, True)
     )
     watchtime = f"**Watchtime**: +{get_watchtime(runtime, episodes)}"
     if s:
@@ -323,8 +319,7 @@ async def display_movie(e, result_id):
         tagline = f"       -`{tagline}`"
     else:
         tagline = ""
-    s = add_series(e.chat_id, result_id,
-                   res["title"], get_watchtime(runtime, 1, True))
+    s = add_series(e.chat_id, result_id, res["title"], get_watchtime(runtime, 1, True))
     if s:
         return await e.reply(
             "Already in watched list!\n" f"**Title**: {res['title']}\n"
@@ -395,7 +390,14 @@ async def _rmwatched(e):
     text = "Are you sure you want to remove {} from your watched list?".format(
         s["name"]
     )
-    await e.reply(text, buttons=[Button.inline("Yes", data="rmwatched_yes_{}".format(s["series_id"])), Button.inline("No", data="rmwatched_no_{}".format(s["series_id"]))])
+    await e.reply(
+        text,
+        buttons=[
+            Button.inline("Yes", data="rmwatched_yes_{}".format(s["series_id"])),
+            Button.inline("No", data="rmwatched_no_{}".format(s["series_id"])),
+        ],
+    )
+
 
 @Callback(pattern="rmwatched_yes_(.*)")
 async def rmwatched_yes(e):
