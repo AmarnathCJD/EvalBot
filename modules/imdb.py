@@ -135,7 +135,8 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(
+        class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -161,7 +162,8 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find(
+            "a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -224,43 +226,20 @@ async def _watched(e):
         query = e.text.split(None, maxsplit=1)[1]
     except IndexError:
         return await display_watched(e)
-    params = {"api_key": IMDB_API, "language": "en-US", "query": query, "include_adult": "true", "page": "1"}
+    params = {"api_key": IMDB_API, "language": "en-US",
+              "query": query, "include_adult": "true", "page": "1"}
     r = get("https://api.themoviedb.org/3/search/multi", params=params)
     if r.status_code != 200:
         return await e.edit("`Something went wrong.`")
     data = r.json()
     if data["results"] == 0:
-        return await e.edit("`Couldn't find the series.`")
-    series_id = data["results"][0]["id"]
-    params = {"api_key": IMDB_API, "language": "en-US", "series_id": series_id}
-    r = get("https://api.themoviedb.org/3/tv/{}".format(series_id), params=params)
-    if r.status_code != 200:
-        return await e.edit("`Something went wrong.`")
-    data = r.json()
-    if data["status_code"] != 1:
-        return await e.edit("`Couldn't find the series.`")
-    name = data["name"]
-    if data["in_production"]:
-        status = "In Production"
-    else:
-        status = "Ended"
-    seasons = data["seasons"]
-    episodes = []
-    for season in seasons:
-        episodes.extend(season["episodes"])
-    episodes = sorted(episodes, key=lambda x: x["episode_number"])
-    episodes = [
-        f"{ep['name']} ({ep['air_date']})" if ep["air_date"] else f"{ep['name']}"
-        for ep in episodes
-    ]
-    episodes = "\n".join(episodes)
-    await e.reply(
-        f"**{name}**\n\nStatus: **{status}**\n\nSeasons: **{len(seasons)}**\n\nEpisodes: \n{episodes}"
-    )
+        return await e.edit("`Couldn't find it.`")
+    result = data["results"][0]
+    if result["media_type"] == "tv":
+        return await display_tv_series(e, result["id"])
 
 
-async def display_tv_series(e, res):
-    result_id = res["results"][0]["id"]
+async def display_tv_series(e, result_id):
     params = {"api_key": IMDB_API}
     r = get(f"https://api.themoviedb.org/3/tv/{result_id}", params=params)
     if r.status_code != 200:
