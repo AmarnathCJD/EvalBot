@@ -335,9 +335,9 @@ async def display_watched(e):
     text = "<u><b>Watched Series</b></u>\n"
     wt = 0
     for i in series:
-        text += "> <b><i>{}</i></b> (<code>{} hours</code>)\n".format(
+        text += "> <b><i>{}</i></b> ({})\n".format(
             i["name"], format_time(i["watchtime"])
         )
         wt += int(i["watchtime"])
-    text += f"\n**Total Watchtime**: <code>{format_time(wt)}</code>"
+    text += f"\n<b>Total Watchtime<b>: {format_time(wt)} \n"
     await e.reply(text, parse_mode="html")
