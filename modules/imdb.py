@@ -283,4 +283,7 @@ def program_type(q: str):
 
 def get_watchtime(runtime, episodes):
     w = int(runtime) * int(episodes)
-    return "{}h {}m".format(divmod(w, 60))
+    if w > 60:
+        return f"{int(w / 60)} hours"
+    else:
+        return f"{w} mins"
