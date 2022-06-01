@@ -352,13 +352,13 @@ def get_watchtime(runtime, episodes=1, isint=False):
 
 
 def format_time(time):
-    d, r = divmod(time / (60*24))
-    h, r= divmod(r/60)
-    m = r//60
+    d, r = divmod(time / (60 * 24))
+    h, r = divmod(r / 60)
+    m = r // 60
     if d > 0:
-       return "{}days, {}h{}min".format(d, h, m)
+        return "{}days, {}h{}min".format(d, h, m)
     if h > 0:
-       return "{}h {}m".format(h, m)
+        return "{}h {}m".format(h, m)
     return str(m) + " mins"
 
 
