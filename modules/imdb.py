@@ -325,6 +325,11 @@ def get_watchtime(runtime, episodes=1, isint=False):
     else:
         return f"{w} mins"
 
+def format_time(time):
+    hours = time // 60
+    minutes = time % 60
+    return f"{hours}h {minutes}m"
+
 
 async def display_watched(e):
     user_id = e.sender_id
@@ -335,8 +340,8 @@ async def display_watched(e):
     wt = 0
     for i in series:
         text += "> <b><i>{}</i></b> (<code>{} hours</code>)\n".format(
-            i["name"], i["watchtime"]
+            i["name"], format_time(i["watchtime"])
         )
         wt += int(i["watchtime"])
-    text += f"\n**Total Watchtime**: <code>{get_watchtime(wt)}</code>"
+    text += f"\n**Total Watchtime**: <code>{format_time(wt)}</code>"
     await e.reply(text, parse_mode="html")
