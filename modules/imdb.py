@@ -135,8 +135,7 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(
-        class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -162,8 +161,7 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find(
-            "a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -226,8 +224,13 @@ async def _watched(e):
         query = e.text.split(None, maxsplit=1)[1]
     except IndexError:
         return await display_watched(e)
-    params = {"api_key": IMDB_API, "language": "en-US",
-              "query": query, "include_adult": "true", "page": "1"}
+    params = {
+        "api_key": IMDB_API,
+        "language": "en-US",
+        "query": query,
+        "include_adult": "true",
+        "page": "1",
+    }
     r = get("https://api.themoviedb.org/3/search/multi", params=params)
     if r.status_code != 200:
         return await e.edit("`Something went wrong.`")
