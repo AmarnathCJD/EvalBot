@@ -260,7 +260,7 @@ async def display_tv_series(e, result_id):
     seasons = f"**Seasons**: {seasons}"
     episodes = f"**Episodes**: {episodes}"
     await e.reply(
-        f"Added **{res['name']}** to watched\n{tagline}\n{status}\n{seasons}\n{episodes}\n{watchtime}"
+        f"Added **{res['name']}**  to watched\n{tagline}\n{status}\n{seasons}\n{episodes}\n{watchtime}"
     )
 
 
