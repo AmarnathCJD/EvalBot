@@ -225,6 +225,27 @@ def get_all_series(user_id):
     return []
 
 
+def get_series_by_id(user_id, id):
+    s = get_all_series(user_id)
+    try:
+        ser = s[id-1]
+    except IndexError:
+        return None
+    return ser
+
+
+def rm_series(user_id, id):
+    series.update_one(
+        {"user_id": user_id},
+        {
+            "$pull": {
+                "series": {"series_id": id}
+            }
+        },
+        upsert=True,
+    )
+
+
 @command(pattern="watched")
 async def _watched(e):
     try:
@@ -348,3 +369,18 @@ async def display_watched(e):
         wt += int(i["watchtime"])
     text += f"\n<b>Total Watchtime<b>: {format_time(wt)} \n"
     await e.reply(text, parse_mode="html")
+
+
+@command(pattern="rmwatched")
+async def _rmwatched(e):
+    try:
+        query = e.text.split(None, maxsplit=1)[1]
+    except IndexError:
+        return await e.reply("`What should i remove?`")
+    if not query.isdigit():
+        return await e.reply("`Usage: /rmwatched <series number>`")
+    s = get_series_by_id(e.user_id, query)
+    if not s:
+            return await e.reply("`Series not found!`")
+    rm_series(e.chat_id, s["id"])
+    await e.reply("`Removed!`")
