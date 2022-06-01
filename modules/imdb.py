@@ -298,8 +298,6 @@ async def display_tv_series(e, result_id):
     try:
         await e.reply(
             f"**Added __{res['name']}__  to watched List**\n{tagline}\n{status}\n{seasons}\n{watchtime}",
-            file=POSTER,
-            force_document=True,
         )
     except:
         await e.reply(
