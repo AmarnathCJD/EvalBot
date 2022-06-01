@@ -300,7 +300,7 @@ async def display_movie(e, result_id):
         return await e.reply(
             "Already in watched list!\n" f"**Title**: {res['title']}\n"
         )
-    await e.reply(str(s))    
+    await e.reply(str(s))
     watchtime = f"**Watchtime**: +{get_watchtime(runtime, 1)}"
     status = f"**Status**: {res['status']}" if res["status"] else ""
     release_date = f"**Release Date**: {release_date}" if release_date else ""
