@@ -134,7 +134,8 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(
+        class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -160,7 +161,8 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find(
+            "a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -266,7 +268,8 @@ async def display_tv_series(e, result_id):
     else:
         tagline = ""
     s = add_series(
-        e.chat_id, result_id, res["name"], get_watchtime(runtime, episodes, True)
+        e.chat_id, result_id, res["name"], get_watchtime(
+            runtime, episodes, True)
     )
     watchtime = f"**Watchtime**: +{get_watchtime(runtime, episodes)}"
     if s:
@@ -295,7 +298,8 @@ async def display_movie(e, result_id):
         tagline = f"       -`{tagline}`"
     else:
         tagline = ""
-    s = add_series(e.chat_id, result_id, res["title"], get_watchtime(runtime, 1, True))
+    s = add_series(e.chat_id, result_id,
+                   res["title"], get_watchtime(runtime, 1, True))
     if s:
         return await e.reply(
             "Already in watched list!\n" f"**Title**: {res['title']}\n"
@@ -312,7 +316,7 @@ async def display_movie(e, result_id):
     )
 
 
-def get_watchtime(runtime, episodes, isint=False):
+def get_watchtime(runtime, episodes=1, isint=False):
     w = int(runtime) * int(episodes)
     if isint:
         return int(w)
@@ -328,7 +332,11 @@ async def display_watched(e):
     if len(series) == 0:
         return await e.reply("`You haven't watched any series yet!`")
     text = "<u><b>Watched Series</b></u>\n"
+    wt = 0
     for i in series:
-        text += f"<b>{i['name']}</b>\n"
-        text += f"<code>Watchtime:</code> {i['watchtime']}\n"
+        text += "> <b><i>{}</i></b> (<code>{} hours</code>)\n".format(
+            i["name"], i["watchtime"]
+        )
+        wt += int(i["watchtime"])
+    text += f"\n**Total Watchtime**: <code>{get_watchtime(wt)}</code>"
     await e.reply(text, parse_mode="html")
