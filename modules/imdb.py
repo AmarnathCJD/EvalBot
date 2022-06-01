@@ -256,11 +256,11 @@ async def display_tv_series(e, res):
         tagline = f"**Tagline**: {tagline}"
     else:
         tagline = ""
+    watchtime = f"**Watchtime**: {get_watchtime(runtime, episodes)}"
     status = f"**Status**: {res['status']}" if res["status"] else ""
     seasons = f"**Seasons**: {seasons}"
     episodes = f"**Episodes**: {episodes}"
-    runtime = f"**Runtime**: {runtime} hrs"
-    watchtime = f"**Watchtime**: {get_watchtime(runtime, episodes)}"
+    runtime = f"**Runtime**: {runtime} mins"
     await e.reply(
         f"**{res['name']}**\n{tagline}\n{status}\n{seasons}\n{episodes}\n{runtime}\n{watchtime}"
     )
