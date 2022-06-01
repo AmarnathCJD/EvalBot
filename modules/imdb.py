@@ -134,8 +134,7 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(
-        class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -161,8 +160,7 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find(
-            "a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
