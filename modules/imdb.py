@@ -257,14 +257,16 @@ async def display_tv_series(e, result_id):
     episodes = res["number_of_episodes"]
     tagline = res["tagline"]
     if tagline:
-        tagline = f"         - Tagline: `{tagline}`"
+        tagline = f"       -`{tagline}`"
     else:
         tagline = ""
     watchtime = f"**Watchtime**: {get_watchtime(runtime, episodes)}"
     status = f"**Status**: {res['status']}" if res["status"] else ""
     seasons = f"**S**: {seasons} | **E**: {episodes}"
+    POSTER = f"https://image.tmdb.org/t/p/original{res['poster_path']}"
     await e.reply(
-        f"**Added __{res['name']}__  to watched List**\n{tagline}\n{status}\n{seasons}\n{watchtime}"
+        f"**Added __{res['name']}__  to watched List**\n{tagline}\n{status}\n{seasons}\n{watchtime}",
+        file=POSTER
     )
 
 
