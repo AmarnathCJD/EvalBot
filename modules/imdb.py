@@ -321,6 +321,7 @@ def get_watchtime(runtime, episodes=1, isint=False):
     else:
         return f"{w} mins"
 
+
 def format_time(time):
     hours = time // 60
     minutes = time % 60
