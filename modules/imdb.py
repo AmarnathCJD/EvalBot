@@ -258,7 +258,7 @@ async def _watched(e):
     if r.status_code != 200:
         return await e.edit("`Something went wrong.`")
     data = r.json()
-    if data["results"] == 0:
+    if len(data["results"]) == 0:
         return await e.edit("`Couldn't find it.`")
     result = data["results"][0]
     if result["media_type"] == "tv":
