@@ -279,8 +279,8 @@ async def display_movie(e, result_id):
     res = r.json()
     runtime = res["runtime"]
     tagline = res["tagline"]
-    res["imdb_id"]
-    res["release_date"]
+    imdb_id = res["imdb_id"]
+    release_date = res["release_date"]
     status = res["status"]
     if tagline:
         tagline = f"       -`{tagline}`"
