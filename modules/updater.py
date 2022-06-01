@@ -6,11 +6,6 @@ from .helpers import bash, command
 REPO = "https://github.com/amarnathcjd/evalbot"
 
 
-async def update():
-    await bash("git pull")
-    await update_deps()
-
-
 async def update_deps():
     await bash("pip3 install -r requirements.txt -U")
 
@@ -28,6 +23,7 @@ async def generate_github_change_log():
 
 @command(pattern="update")
 async def _update(e):
-    await update()
+    await bash("git pull")
     await e.reply((await generate_github_change_log()), link_preview=False)
+    await update_deps()
     execl()

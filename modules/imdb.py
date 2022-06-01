@@ -283,4 +283,4 @@ def program_type(q: str):
 
 def get_watchtime(runtime, episodes):
     w = int(runtime) * int(episodes)
-    return "{.hours}h {.minutes}m".format(divmod(w, 60))
+    return "{}h {}m".format(divmod(w, 60))
