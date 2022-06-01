@@ -269,7 +269,7 @@ async def display_tv_series(e, result_id):
     POSTER = f"https://image.tmdb.org/t/p/original{res['poster_path']}"
     await e.reply(
         f"**Added __{res['name']}__  to watched List**\n{tagline}\n{status}\n{seasons}\n{watchtime}",
-        file=POSTER
+        file=POSTER,
     )
 
 
