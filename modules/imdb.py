@@ -1,6 +1,4 @@
 import os
-from platform import release
-from urllib.parse import quote
 
 from bs4 import BeautifulSoup
 from numpy import imag
@@ -137,8 +135,7 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(
-        class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -164,8 +161,7 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find(
-            "a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -282,8 +278,8 @@ async def display_movie(e, result_id):
     res = r.json()
     runtime = res["runtime"]
     tagline = res["tagline"]
-    imdb_id = res["imdb_id"]
-    release_date = res["release_date"]
+    res["imdb_id"]
+    res["release_date"]
     status = res["status"]
     if tagline:
         tagline = f"       -`{tagline}`"
