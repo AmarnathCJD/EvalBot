@@ -384,7 +384,7 @@ async def _rmwatched(e):
         return await e.reply("`What should i remove?`")
     if not query.isdigit():
         return await e.reply("`Usage: /rmwatched <series number>`")
-    s = get_series_by_id(e.sender_id, query)
+    s = get_series_by_id(e.sender_id, int(query))
     if not s:
         return await e.reply("`Series not found!`")
     text = "Are you sure you want to remove {} from your watched list?".format(
