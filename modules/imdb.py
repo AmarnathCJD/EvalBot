@@ -1,6 +1,5 @@
-from ast import pattern
 import os
-from tkinter import Button
+from telethon import Button
 
 from bs4 import BeautifulSoup
 from requests import get
