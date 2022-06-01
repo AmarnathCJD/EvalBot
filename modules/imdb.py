@@ -224,19 +224,39 @@ async def _watched(e):
         query = e.text.split(None, maxsplit=1)[1]
     except IndexError:
         return await display_watched(e)
-    params = {"api_key": IMDB_API}
-    params["query"] = query
-    _type = program_type(query)
-    r = get(f"https://api.themoviedb.org/3/search/{_type}", params=params)
+    params = {"api_key": IMDB_API, "language": "en-US", "query": query, "include_adult": "true", "page": "1"}
+    r = get("https://api.themoviedb.org/3/search/multi", params=params)
     if r.status_code != 200:
-        return await e.reply(f"`Error: {r.status_code}`")
-    res = r.json()
-    if len(res["results"]) == 0:
-        return await e.reply("`No results found!`")
-    if _type == "tv":
-        return await display_tv_series(e, res)
+        return await e.edit("`Something went wrong.`")
+    data = r.json()
+    if data["results"] == 0:
+        return await e.edit("`Couldn't find the series.`")
+    series_id = data["results"][0]["id"]
+    params = {"api_key": IMDB_API, "language": "en-US", "series_id": series_id}
+    r = get("https://api.themoviedb.org/3/tv/{}".format(series_id), params=params)
+    if r.status_code != 200:
+        return await e.edit("`Something went wrong.`")
+    data = r.json()
+    if data["status_code"] != 1:
+        return await e.edit("`Couldn't find the series.`")
+    name = data["name"]
+    if data["in_production"]:
+        status = "In Production"
     else:
-        return await display_movies(e, res)
+        status = "Ended"
+    seasons = data["seasons"]
+    episodes = []
+    for season in seasons:
+        episodes.extend(season["episodes"])
+    episodes = sorted(episodes, key=lambda x: x["episode_number"])
+    episodes = [
+        f"{ep['name']} ({ep['air_date']})" if ep["air_date"] else f"{ep['name']}"
+        for ep in episodes
+    ]
+    episodes = "\n".join(episodes)
+    await e.reply(
+        f"**{name}**\n\nStatus: **{status}**\n\nSeasons: **{len(seasons)}**\n\nEpisodes: \n{episodes}"
+    )
 
 
 async def display_tv_series(e, res):
@@ -260,9 +280,8 @@ async def display_tv_series(e, res):
     status = f"**Status**: {res['status']}" if res["status"] else ""
     seasons = f"**Seasons**: {seasons}"
     episodes = f"**Episodes**: {episodes}"
-    runtime = f"**Runtime**: {runtime} mins"
     await e.reply(
-        f"**{res['name']}**\n{tagline}\n{status}\n{seasons}\n{episodes}\n{runtime}\n{watchtime}"
+        f"Added **{res['name']}** to watched\n{tagline}\n{status}\n{seasons}\n{episodes}\n{watchtime}"
     )
 
 
