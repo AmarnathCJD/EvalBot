@@ -327,8 +327,8 @@ async def display_watched(e):
     series = get_all_series(user_id=user_id)
     if len(series) == 0:
         return await e.reply("`You haven't watched any series yet!`")
-    text = "**Watched Series**\n"
+    text = "<u><b>Watched Series</b></u>\n"
     for i in series:
-        text += f"**{i['name']}**({i['watchtime']})\n"
-    text += "Source: **TheMovieDB**"
-    await e.reply(text)
+        text += f"<b>{i['name']}</b>\n"
+        text += f"<code>Watchtime:</code> {i['watchtime']}\n"
+    await e.reply(text, parse_mode="html")
