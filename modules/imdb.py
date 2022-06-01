@@ -228,7 +228,7 @@ def get_all_series(user_id):
 def get_series_by_id(user_id, id):
     s = get_all_series(user_id)
     try:
-        ser = s[id-1]
+        ser = s[id - 1]
     except IndexError:
         return None
     return ser
@@ -237,11 +237,7 @@ def get_series_by_id(user_id, id):
 def rm_series(user_id, id):
     series.update_one(
         {"user_id": user_id},
-        {
-            "$pull": {
-                "series": {"series_id": id}
-            }
-        },
+        {"$pull": {"series": {"series_id": id}}},
         upsert=True,
     )
 
