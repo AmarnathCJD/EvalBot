@@ -134,7 +134,8 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(
+        class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -160,7 +161,8 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find(
+            "a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -200,6 +202,10 @@ IMDB_API = os.getenv("IMDB_KEY")
 
 
 def add_series(user_id, series_id, name, watchtime):
+    series_ = get_all_series(user_id)
+    for i in series_:
+        if i["series_id"] == series_id:
+            return True
     series.update_one(
         {"user_id": user_id},
         {
@@ -209,12 +215,14 @@ def add_series(user_id, series_id, name, watchtime):
         },
         upsert=True,
     )
+    return False
 
 
 def get_all_series(user_id):
     q = series.find_one({"user_id": user_id})
     if q:
         return q.get("series")
+    return []
 
 
 @command(pattern="watched")
@@ -259,7 +267,14 @@ async def display_tv_series(e, result_id):
         tagline = f"       -`{tagline}`"
     else:
         tagline = ""
+    s = add_series(e.chat_id, result_id,
+                   res["name"], get_watchtime(runtime, episodes, True))
     watchtime = f"**Watchtime**: +{get_watchtime(runtime, episodes)}"
+    if s:
+        return await e.reply(
+            "Already in watched list!\n"
+            f"**Title**: {res['name']}\n"
+        )
     status = f"**Status**: {res['status']}" if res["status"] else ""
     seasons = f"**S**: {seasons} | **E**: {episodes}"
     POSTER = f"https://image.tmdb.org/t/p/original{res['poster_path']}"
@@ -284,6 +299,13 @@ async def display_movie(e, result_id):
         tagline = f"       -`{tagline}`"
     else:
         tagline = ""
+    s = add_series(e.chat_id, result_id,
+                   res["title"], get_watchtime(runtime, 1, True))
+    if s:
+        return await e.reply(
+            "Already in watched list!\n"
+            f"**Title**: {res['title']}\n"
+        )
     watchtime = f"**Watchtime**: +{get_watchtime(runtime, 1)}"
     status = f"**Status**: {res['status']}" if res["status"] else ""
     release_date = f"**Release Date**: {release_date}" if release_date else ""
@@ -295,9 +317,23 @@ async def display_movie(e, result_id):
     )
 
 
-def get_watchtime(runtime, episodes):
+def get_watchtime(runtime, episodes, isint=False):
     w = int(runtime) * int(episodes)
+    if isint:
+        return int(w)
     if w > 60:
         return f"{int(w / 60)} hours"
     else:
         return f"{w} mins"
+
+
+async def display_watched(e):
+    user_id = e.sender_id
+    series = get_all_series(user_id=user_id)
+    if len(series) == 0:
+        return await e.reply("`You haven't watched any series yet!`")
+    text = "**Watched Series**\n"
+    for i in series:
+        text += f"**{i['name']}**({i['watchtime']})\n"
+    text += "Source: **TheMovieDB**"
+    await e.reply(text)
