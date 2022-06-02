@@ -372,8 +372,8 @@ async def display_watched(e):
     )
 
 
-@Callback(pattern="nxt_(.*)_(.*)")
-async def next_page(e):
+@Callback(pattern="nxt_(.*?)_(.*?)")
+async def _next_page(e):
     user_id = int(e.match.group(1))
     page = int(e.match.group(2))
     series = get_all_series(user_id=user_id)
@@ -386,7 +386,7 @@ async def next_page(e):
 
 
 @Callback(pattern="prev_(.*)_(.*)")
-async def prev_page(e):
+async def _prev_page(e):
     user_id = int(e.match.group(1))
     page = int(e.match.group(2))
     series = get_all_series(user_id=user_id)
@@ -414,13 +414,13 @@ def get_series_text(series, page_no=1):
     wt = 0
     y = ""
     for i in series:
+        q += 1
         y += f"{q}. -><b>{i['name']}</b> ({format_time(i['watchtime'])})\n"
         wt += int(i["watchtime"])
-        q += 1
     text += paginate(y, page_no)
     text += f"\n<b>Total Watchtime</b>: {format_time(wt)} \n"
     return text
-
+# soon
 
 @command(pattern="rmwatched")
 async def _rmwatched(e):
