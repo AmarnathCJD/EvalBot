@@ -355,7 +355,7 @@ def format_time(time):
     days = time // (86400 / 60)
     hours = (time % (86400 / 60)) // 3600
     minutes = (time % (3600 / 60)) // 60
-    return f"{days}d {hours}h {minutes}m"
+    return f"{int(days)}d {int(hours)}h {int(minutes)}m"
 
 
 async def display_watched(e):
@@ -414,7 +414,7 @@ def get_series_text(series, page_no=1):
     wt = 0
     y = ""
     for i in series:
-        y += f"{q}. ->{i['name']} ({format_time(i['watchtime'])})\n"
+        y += f"{q}. -><b>{i['name']}</b> ({format_time(i['watchtime'])})\n"
         wt += int(i["watchtime"])
         q += 1
     text += paginate(y, page_no)
