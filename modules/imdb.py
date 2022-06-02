@@ -1,3 +1,4 @@
+from ast import pattern
 import os
 
 from bs4 import BeautifulSoup
@@ -135,7 +136,8 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(
+        class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -161,7 +163,8 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find(
+            "a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -284,7 +287,8 @@ async def display_tv_series(e, result_id):
     else:
         tagline = ""
     s = add_series(
-        e.sender_id, result_id, res["name"], get_watchtime(runtime, episodes, True)
+        e.sender_id, result_id, res["name"], get_watchtime(
+            runtime, episodes, True)
     )
     watchtime = f"**Watchtime**: +{get_watchtime(runtime, episodes)}"
     if s:
@@ -363,17 +367,69 @@ async def display_watched(e):
     series = get_all_series(user_id=user_id)
     if len(series) == 0:
         return await e.reply("`You haven't watched any series yet!`")
-    text = "<u><b>Watched Series</b></u>\n"
-    wt = 0
-    q = 0
-    for i in series:
-        q += 1
-        text += "{}.> <b><i>{}</i></b> ({})\n".format(
-            q, i["name"], format_time(i["watchtime"])
+    t = get_series_text(series)
+    buttons = None
+    if len(t.split("\n")) > 15:
+        t = paginate(t, 1)
+        buttons = [
+            Button.inline(
+                "➡️ Next", data="nxt_{}_{}".format(user_id, 2)
+            )
+        ]
+    await e.respond(t, parse_mode="html", reply_to=e.reply_to_msg_id or e.id, buttons=buttons)
+
+
+@Callback(pattern="nxt_(.*)_(.*)")
+async def next_page(e):
+    user_id = int(e.match.group(1))
+    page = int(e.match.group(2))
+    series = get_all_series(user_id=user_id)
+    t = get_series_text(series)
+    t = paginate(t, page)
+    buttons = [
+        Button.inline(
+            "➡️ Next", data="nxt_{}_{}".format(user_id, page + 1)
+        ),
+        Button.inline(
+            "⬅️ Previous", data="prev_{}_{}".format(user_id, page - 1)
         )
+    ]
+    await e.edit(t, buttons=buttons, parse_mode="html")
+
+
+@Callback(pattern="prev_(.*)_(.*)")
+async def prev_page(e):
+    user_id = int(e.match.group(1))
+    page = int(e.match.group(2))
+    series = get_all_series(user_id=user_id)
+    t = get_series_text(series)
+    t = paginate(t, page)
+    buttons = [
+        Button.inline(
+            "➡️ Next", data="nxt_{}_{}".format(user_id, page + 1)
+        ),
+        Button.inline(
+            "⬅️ Previous", data="prev_{}_{}".format(user_id, page - 1)
+        )
+    ] if page > 1 else [Button.inline("➡️ Next", data="nxt_{}_{}".format(user_id, page + 1))]
+    await e.edit(t, buttons=buttons, parse_mode="html")
+
+
+def paginate(s, page_number):
+    lines = s.split("\n")
+    chunks = [lines[i: i + 15] for i in range(0, len(lines), 15)]
+    return chunks[page_number - 1]
+
+
+def get_series_text(series):
+    text = "<u><b>Watched Series</b></u>\n"
+    q = 0
+    wt = 0
+    for i in series:
+        text += f"{q}. ->{i['name']} ({format_time(i['watchtime'])})\n"
         wt += int(i["watchtime"])
     text += f"\n<b>Total Watchtime</b>: {format_time(wt)} \n"
-    await e.reply(text, parse_mode="html")
+    return text
 
 
 @command(pattern="rmwatched")
@@ -393,7 +449,8 @@ async def _rmwatched(e):
     await e.reply(
         text,
         buttons=[
-            Button.inline("Yes", data="rmwatched_yes_{}".format(s["series_id"])),
+            Button.inline(
+                "Yes", data="rmwatched_yes_{}".format(s["series_id"])),
             Button.inline("No", data="rmwatched_no_{}".format(s["series_id"])),
         ],
     )
