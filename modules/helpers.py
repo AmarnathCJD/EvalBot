@@ -42,6 +42,7 @@ def Callback(**args):
             except Exception as e:
                 ERRORS.append(e)
                 await ev.answer(str(e), alert=True)
+
         bot.add_event_handler(func, telethon.events.CallbackQuery(**args))
         return func
 
