@@ -407,7 +407,7 @@ async def prev_page(e):
 def paginate(s, page_number):
     lines = s.split("\n")
     chunks = [lines[i : i + 15] for i in range(0, len(lines), 15)]
-    return chunks[page_number - 1]
+    return "\n".join(chunks[page_number - 1])
 
 
 def get_series_text(series, page_no=1):
