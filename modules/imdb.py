@@ -366,12 +366,10 @@ async def display_watched(e):
     t = get_series_text(series)
     buttons = None
     if len(t.split("\n")) > 15:
-        buttons = [
-            Button.inline(
-                "➡️ Next", data="nxt_{}_{}".format(user_id, 2)
-            )
-        ]
-    await e.respond(t, parse_mode="html", reply_to=e.reply_to_msg_id or e.id, buttons=buttons)
+        buttons = [Button.inline("➡️ Next", data="nxt_{}_{}".format(user_id, 2))]
+    await e.respond(
+        t, parse_mode="html", reply_to=e.reply_to_msg_id or e.id, buttons=buttons
+    )
 
 
 @Callback(pattern="nxt_(.*)_(.*)")
@@ -393,14 +391,14 @@ async def prev_page(e):
     page = int(e.match.group(2))
     series = get_all_series(user_id=user_id)
     t = get_series_text(series)
-    buttons = [
-        Button.inline(
-            "➡️ Next", data="nxt_{}_{}".format(user_id, page + 1)
-        ),
-        Button.inline(
-            "⬅️ Previous", data="prev_{}_{}".format(user_id, page - 1)
-        )
-    ] if page > 1 else [Button.inline("➡️ Next", data="nxt_{}_{}".format(user_id, page + 1))]
+    buttons = (
+        [
+            Button.inline("➡️ Next", data="nxt_{}_{}".format(user_id, page + 1)),
+            Button.inline("⬅️ Previous", data="prev_{}_{}".format(user_id, page - 1)),
+        ]
+        if page > 1
+        else [Button.inline("➡️ Next", data="nxt_{}_{}".format(user_id, page + 1))]
+    )
     await e.edit(t, buttons=buttons, parse_mode="html")
 
 
@@ -414,12 +412,12 @@ def get_series_text(series, page_no=1):
     text = "<u><b>Watched Series</b></u>\n"
     q = 0
     wt = 0
-    y= ""
+    y = ""
     for i in series:
         y += f"{q}. ->{i['name']} ({format_time(i['watchtime'])})\n"
         wt += int(i["watchtime"])
         q += 1
-    text += paginate(y, page_no)     
+    text += paginate(y, page_no)
     text += f"\n<b>Total Watchtime</b>: {format_time(wt)} \n"
     return text
 
