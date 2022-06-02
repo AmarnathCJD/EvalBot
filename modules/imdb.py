@@ -135,7 +135,8 @@ def get_crew_cast_info(soup):
     if rev:
         user_review = rev.find(class_="ipc-html-content-inner-div").text
     story = ""
-    story_line = soup.find(class_="ipc-page-section ipc-page-section--base celwidget")
+    story_line = soup.find(
+        class_="ipc-page-section ipc-page-section--base celwidget")
     if story_line:
         story = story_line.find(class_="ipc-html-content-inner-div")
         if story:
@@ -161,7 +162,8 @@ def get_crew_cast_info(soup):
     aka = ""
     aka_ = soup.find({"data-testid": "title-details-akas"})
     if aka_:
-        aka = aka_.find("a", class_="ipc-metadata-list-item__list-content-item").text
+        aka = aka_.find(
+            "a", class_="ipc-metadata-list-item__list-content-item").text
     return {
         "cast": cast,
         "creators": creators,
@@ -284,7 +286,8 @@ async def display_tv_series(e, result_id):
     else:
         tagline = ""
     s = add_series(
-        e.sender_id, result_id, res["name"], get_watchtime(runtime, episodes, True)
+        e.sender_id, result_id, res["name"], get_watchtime(
+            runtime, episodes, True)
     )
     watchtime = f"**Watchtime**: +{get_watchtime(runtime, episodes)}"
     if s:
@@ -352,15 +355,10 @@ def get_watchtime(runtime, episodes=1, isint=False):
 
 
 def format_time(time):
-    d, r = divmod(time, (60 * 24))
-    h = int(r)
-    _, r = divmod(r, 60)
-    m = r // 60
-    if d > 0:
-        return "{}days, {}h{}min".format(d, h, m)
-    if h > 0:
-        return "{}h {}m".format(h, m)
-    return str(m) + " mins"
+    days = time // (86400/60)
+    hours = (time % (86400/60)) // 3600
+    minutes = (time % (3600/60)) // 60
+    return f"{days}d {hours}h {minutes}m"
 
 
 async def display_watched(e):
@@ -378,10 +376,10 @@ async def display_watched(e):
         )
         wt += int(i["watchtime"])
     text += f"\n<b>Total Watchtime</b>: {format_time(wt)} \n"
-    await e.respond(text, parse_mode="html", reply_to=e.reply_to_msg_id or e.id)
+    await e.reply(text, parse_mode="html")
 
 
-@command(pattern="rmwatched")
+@ command(pattern="rmwatched")
 async def _rmwatched(e):
     try:
         query = e.text.split(None, maxsplit=1)[1]
@@ -398,13 +396,14 @@ async def _rmwatched(e):
     await e.reply(
         text,
         buttons=[
-            Button.inline("Yes", data="rmwatched_yes_{}".format(s["series_id"])),
+            Button.inline(
+                "Yes", data="rmwatched_yes_{}".format(s["series_id"])),
             Button.inline("No", data="rmwatched_no_{}".format(s["series_id"])),
         ],
     )
 
 
-@Callback(pattern="rmwatched_(.*)_(.*)")
+@ Callback(pattern="rmwatched_(.*)_(.*)")
 async def rmwatched_yes(e):
     data = e.data.decode("utf-8").split("_")
     series_id = data[2]
@@ -412,6 +411,6 @@ async def rmwatched_yes(e):
     await e.edit("`Removed from watched list!`")
 
 
-@Callback(pattern="cancelrmwatched")
+@ Callback(pattern="cancelrmwatched")
 async def rmwatched_no(e):
     await e.edit("`Cancelled!`")
