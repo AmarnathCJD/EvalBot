@@ -427,6 +427,8 @@ def get_series_text(series, page_no=1):
     text += paginate(y, page_no)
     text += f"\n<b>Total Watchtime</b>: {format_time(wt)} \n"
     return text
+
+
 # soon
 
 
