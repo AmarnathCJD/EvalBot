@@ -354,7 +354,7 @@ def get_watchtime(runtime, episodes=1, isint=False):
 def format_time(time):
     hours = time // 60
     minutes = time % 60 # % is remainder
-    return "{}:{}".format(hours, minutes)
+    return "{}h {}mins".format(hours, minutes)
 
 
 async def display_watched(e):
