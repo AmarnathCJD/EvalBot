@@ -36,6 +36,12 @@ def InlineQuery(**args):
 
 def Callback(**args):
     def decorator(func):
+        async def wrapper(ev):
+            try:
+                await func(ev)
+            except Exception as e:
+                ERRORS.append(e)
+                await ev.answer(str(e), alert=True)
         bot.add_event_handler(func, telethon.events.CallbackQuery(**args))
         return func
 
