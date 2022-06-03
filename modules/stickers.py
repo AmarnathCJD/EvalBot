@@ -37,7 +37,6 @@ async def _resize(e):
         size = (int(size[0]), int(size[1]))
     except (TypeError, IndexError):
         return await e.reply("Usage: `resize <width>x<height>`")
-    if 
     i = await get_reply_image(e)
     if (size[0] * size[1]) > 8294400:
         return await e.reply("Max resolution supported is 3840x2160.")
