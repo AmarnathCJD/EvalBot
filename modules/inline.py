@@ -1,12 +1,11 @@
 from requests import get
-
+from telethon import events
 from .helpers import InlineQuery
-
 
 @InlineQuery(pattern="url")
 async def _url(e):
     try:
-        url = e.text.split(" ", maxsplit=3)[2]
+        url = e.text.split(None, maxsplit=2)[1].split(None, maxsplit=2)[1]
     except IndexError:
         return await e.answer(
             [
@@ -28,12 +27,18 @@ async def _url(e):
             ]
         )
     if r.status_code == 302:
+       return await e.answer(
+            [
+                e.builder.article(
+                    title="Redirected (302)", description=str(r.url), text="Redirected, New URL: " + str(r.url)
+                )
+            ]
+        )
+    else:
         return await e.answer(
             [
                 e.builder.article(
-                    title="Redirected (302)",
-                    description=str(r.url),
-                    text="Redirected, New URL: " + str(r.url),
+                    title="Sucess (" + str(r.status_code) + ")", description=str(r.url), text="Not Redirected, URL: " + str(r.url)
                 )
             ]
         )
