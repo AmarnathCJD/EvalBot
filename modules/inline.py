@@ -1,49 +1,40 @@
-from requests import get
+from requests import get, exceptions
+from telethon import Button
 
 from .helpers import InlineQuery
+
+REDIRECT_THUMB = 'https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/undefined/external-redirect-internet-marketing-flaticons-lineal-color-flat-icons-2.png'
+
+
+async def answer_query(e, title, text, desc, thumb, buttons):
+    builder = e.builder
+    result = builder.article(title=title, text=text,
+                             description=desc, thumb=thumb, buttons=buttons)
+    await e.answer([result])
 
 
 @InlineQuery(pattern="url")
 async def _url(e):
     try:
-        url = e.text.split(None, maxsplit=2)[1]
+        q = e.text.split(' ')[1]
     except IndexError:
-        return await e.answer(
-            [
-                e.builder.article(
-                    title="No URL Given.",
-                    description="please provide a url to get its redirect output.",
-                    text="No url was given, provide it get redirect url.",
-                )
-            ]
-        )
+        return await answer_query(e, 'Error', 'No URL provided', 'Provide Any url to get its Redirect Link', REDIRECT_THUMB, [Button.switch_inline('Try Again', 'url', True)])
     try:
-        r = get(url, allow_redirects=True)
-    except Exception as a:
-        return await e.answer(
-            [
-                e.builder.article(
-                    title="Error", description="URL unreachable.", text=str(a)
-                )
-            ]
-        )
-    if r.status_code == 302:
-        return await e.answer(
-            [
-                e.builder.article(
-                    title="Redirected (302)",
-                    description=str(r.url),
-                    text="Redirected, New URL: " + str(r.url),
-                )
-            ]
-        )
-    else:
-        return await e.answer(
-            [
-                e.builder.article(
-                    title="Sucess (" + str(r.status_code) + ")",
-                    description=str(r.url),
-                    text="Not Redirected, URL: " + str(r.url),
-                )
-            ]
-        )
+        r = get(q)
+    except exceptions.ConnectionError:
+        return await answer_query(e, 'Error', 'Connection Error', 'Provide Any url to get its Redirect Link', REDIRECT_THUMB, [Button.switch_inline('Try Again', 'url', True)])
+    except exceptions.Timeout:
+        return await answer_query(e, 'Error', 'Timeout Error', 'Provide Any url to get its Redirect Link', REDIRECT_THUMB, [Button.switch_inline('Try Again', 'url', True)])
+    except exceptions.TooManyRedirects:
+        return await answer_query(e, 'Error', 'Too Many Redirects', 'Provide Any url to get its Redirect Link', REDIRECT_THUMB, [Button.switch_inline('Try Again', 'url', True)])
+    except exceptions.HTTPError:
+        return await answer_query(e, 'Error', 'HTTP Error', 'Provide Any url to get its Redirect Link', REDIRECT_THUMB, [Button.switch_inline('Try Again', 'url', True)])
+    URL_STAT = '`URL Status:` **' + str(r.status_code) + '**'
+    URL_STAT += '\n`URL Content Type:` **' + \
+        str(r.headers['Content-Type']) + '**'
+    URL_STAT += '\n`URL Content Length:` **' + \
+        str(r.headers['Content-Length']) + '**'
+    URL_STAT += '\n`Response Time:` **' + str(r.elapsed.total_seconds()) + '**'
+    URL_STAT += '\n`Redirect URL:` **' + str(r.url) + '**'
+    URL_STAT += '\n`IP Address:` **' + str(r.headers['X-Client-IP']) + '**'
+    await answer_query(e, 'Redirect Link (' + str(r.status_code) + ")", 'Redirect Link: ' + r.url, "", REDIRECT_THUMB, [Button.url("OPEN URL", r.url)])
