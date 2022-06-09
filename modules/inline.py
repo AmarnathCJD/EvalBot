@@ -6,7 +6,7 @@ from .helpers import InlineQuery
 @InlineQuery(pattern="url")
 async def _url(e):
     try:
-        url = e.text.split(None, maxsplit=2)[1].split(None, maxsplit=2)[1]
+        url = e.text.split(None, maxsplit=2)[1]
     except IndexError:
         return await e.answer(
             [
