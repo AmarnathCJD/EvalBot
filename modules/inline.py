@@ -9,14 +9,8 @@ REDIRECT_THUMB = "https://img.icons8.com/external-flaticons-lineal-color-flat-ic
 
 async def answer_query(e: telethon.events.InlineQuery.Event, title, text, desc, thumb, buttons):
     builder = e.builder
-<<<<<<< HEAD
     result = builder.article(title=title, text=text,
                              description=desc, buttons=buttons)
-=======
-    result = builder.article(
-        title=title, text=text, description=desc, thumb=thumb, buttons=buttons
-    )
->>>>>>> 7b5845e7a105a3d4dea90811b6ccce9fc82a5947
     await e.answer([result])
 
 
@@ -34,7 +28,7 @@ async def _url(e):
             [Button.switch_inline("Try Again", "url", True)],
         )
     try:
-        r = get(q)
+        r = get(q, allow_redirects=True, timeout=10)
     except exceptions.ConnectionError:
         return await answer_query(
             e,
@@ -72,8 +66,10 @@ async def _url(e):
             [Button.switch_inline("Try Again", "url", True)],
         )
     URL_STAT = "`URL Status:` **" + str(r.status_code) + "**"
-    URL_STAT += "\n`URL Content Type:` **" + str(r.headers["Content-Type"]) + "**"
-    URL_STAT += "\n`URL Content Length:` **" + str(r.headers["Content-Length"]) + "**"
+    URL_STAT += "\n`URL Content Type:` **" + \
+        str(r.headers["Content-Type"]) + "**"
+    URL_STAT += "\n`URL Content Length:` **" + \
+        str(r.headers["Content-Length"]) + "**"
     URL_STAT += "\n`Response Time:` **" + str(r.elapsed.total_seconds()) + "**"
     URL_STAT += "\n`Redirect URL:` **" + str(r.url) + "**"
     URL_STAT += "\n`IP Address:` **" + str(r.headers["X-Client-IP"]) + "**"
