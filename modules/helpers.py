@@ -33,6 +33,7 @@ def InlineQuery(**args):
                 await func(ev)
             except Exception as e:
                 ERRORS.append(e)
+
         bot.add_event_handler(wrapper, telethon.events.InlineQuery(**args))
         return func
 
