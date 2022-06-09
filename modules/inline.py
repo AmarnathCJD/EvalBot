@@ -1,6 +1,7 @@
 from requests import get
-from telethon import events
+
 from .helpers import InlineQuery
+
 
 @InlineQuery(pattern="url")
 async def _url(e):
