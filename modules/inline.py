@@ -1,9 +1,8 @@
-from config import bot
 from requests import get
 from telethon import events
+from .helpers import InlineQuery
 
-
-@bot.on(events.InlineQuery(pattern="url"))
+@InlineQuery(pattern="url")
 async def _url(e):
     try:
         url = e.text.split(" ", maxsplit=3)[2]
