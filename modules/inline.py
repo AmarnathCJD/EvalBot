@@ -1,7 +1,6 @@
 from requests import get
-
+from telethon import events
 from .helpers import InlineQuery
-
 
 @InlineQuery(pattern="url")
 async def _url(e):
@@ -24,6 +23,14 @@ async def _url(e):
             [
                 e.builder.article(
                     title="Error", description="URL unreachable.", text=str(a)
+                )
+            ]
+        )
+    if r.status_code == 302:
+       return await e.answer(
+            [
+                e.builder.article(
+                    title="Redirected (302)", description=str(r.url), text="Redirected, New URL: " + str(r.url)
                 )
             ]
         )
