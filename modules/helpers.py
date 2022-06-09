@@ -28,7 +28,12 @@ def command(**args):
 
 def InlineQuery(**args):
     def decorator(func):
-        bot.add_event_handler(func, telethon.events.InlineQuery(**args))
+        async def wrapper(ev):
+            try:
+                await func(ev)
+            except Exception as e:
+                ERRORS.append(e)
+        bot.add_event_handler(wrapper, telethon.events.InlineQuery(**args))
         return func
 
     return decorator

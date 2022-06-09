@@ -1,15 +1,16 @@
 from requests import get, exceptions
 from telethon import Button
+import telethon
 
 from .helpers import InlineQuery
 
 REDIRECT_THUMB = 'https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/undefined/external-redirect-internet-marketing-flaticons-lineal-color-flat-icons-2.png'
 
 
-async def answer_query(e, title, text, desc, thumb, buttons):
+async def answer_query(e: telethon.events.InlineQuery.Event, title, text, desc, thumb, buttons):
     builder = e.builder
     result = builder.article(title=title, text=text,
-                             description=desc, thumb=thumb, buttons=buttons)
+                             description=desc, buttons=buttons)
     await e.answer([result])
 
 
