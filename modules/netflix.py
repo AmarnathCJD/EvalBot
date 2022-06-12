@@ -36,6 +36,7 @@ def enter_email(email: str, browser):
     EMAIL_TAG = browser.find_element_by_xpath(
         "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/ul/li/div/div/label/input"
     )
+    print(EMAIL_TAG)
     EMAIL_TAG.clear()
     EMAIL_TAG.send_keys(email)
     return (
