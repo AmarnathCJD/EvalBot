@@ -1,13 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
 
 CHROME = []
 
 
 def browser(new=False):
     if not new and len(CHROME) != 0:
-       return CHROME[0]
+        return CHROME[0]
     CHROME.empty()
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -33,8 +32,11 @@ def xpath(element):
     components.reverse()
     return "/%s" % "/".join(components)
 
+
 def enter_email(email: str, browser):
-    EMAIL_TAG = browser.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/ul/li/div/div/label/input')
+    EMAIL_TAG = browser.find_element_by_xpath(
+        "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/ul/li/div/div/label/input"
+    )
     EMAIL_TAG.clear()
     EMAIL_TAG.send_keys(email)
     return EMAIL_TAG.text or "Failed to enter email."
