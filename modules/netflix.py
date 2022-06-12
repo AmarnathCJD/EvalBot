@@ -45,10 +45,14 @@ def enter_email(email: str, browser):
         return True
     return False
 
+
 def get_started(browser):
-    BTN = browser.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/div/button')
+    BTN = browser.find_element_by_xpath(
+        "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/div/button"
+    )
     if BTN:
         BTN.click()
+
 
 async def send_photo(browser, e):
     with io.BytesIO(base64.b64decode(browser.get_screenshot_as_base64())) as f:
