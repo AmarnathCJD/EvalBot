@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 CHROME_INSTANCES = []
 
 
-def browser(new=False):
+def setup_browser(new=False):
     if not new and len(CHROME_INSTANCES) != 0:
         return CHROME_INSTANCES[-1]
     chrome_options = Options()
@@ -50,6 +50,6 @@ async def send_photo(browser, e):
 
 
 def setup_nf():
-    browser = browser()
+    browser = setup_browser()
     browser.get("https://netflix.com")
     return browser
