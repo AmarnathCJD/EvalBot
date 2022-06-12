@@ -42,7 +42,7 @@ def enter_email(email: str, browser):
         return True
     return False
 
-await def send_photo(browser, e):
+async def send_photo(browser, e):
     with io.BytesIO(base64.b64decode(browser.get_screenshot_as_base64())) as f:
          f.name = "screenshot.png"
          await e.respond(file=f)
