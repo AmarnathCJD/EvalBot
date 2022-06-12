@@ -1,5 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import io
+import base64
+
 
 CHROME_INSTANCES = []
 
