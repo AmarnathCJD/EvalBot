@@ -1,13 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-CHROME = []
+CHROME_INSTANCES = []
 
 
 def browser(new=False):
     if not new and len(CHROME) != 0:
-        return CHROME[0]
-    CHROME.empty()
+        return CHROME[-1]
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
@@ -39,4 +38,4 @@ def enter_email(email: str, browser):
     )
     EMAIL_TAG.clear()
     EMAIL_TAG.send_keys(email)
-    return EMAIL_TAG.text or "Failed to enter email."
+    return "SUCCESS! {}".format(EMAIL_TAG.text) if EMAIL_TAG.text != "" else "Failed to enter email."
