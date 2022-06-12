@@ -4,18 +4,13 @@ import io
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-CHROME_INSTANCES = []
-
 
 def setup_browser(new=False):
-    if not new and len(CHROME_INSTANCES) != 0:
-        return CHROME_INSTANCES[-1]
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     b = webdriver.Chrome(chrome_options=chrome_options)
-    CHROME_INSTANCES.append(b)
     return b
 
 
@@ -60,7 +55,10 @@ async def send_photo(browser, e):
         await e.respond(file=f)
 
 
-def setup_nf():
+def setup_nf(email=""):
     browser = setup_browser()
     browser.get("https://netflix.com")
+    if email != "":
+       enter_email(browser, email)
+       get_started()
     return browser
