@@ -4,8 +4,7 @@ import io
 import random
 import string
 
-from bs4 import BeautifulSoup 
-
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -22,12 +21,14 @@ def setup_browser(new=False):
     b = webdriver.Chrome(chrome_options=chrome_options)
     return b
 
+
 def fb(b):
- s = b.page_source
- s = BeautifulSoup (s, 'html.parser')
- b = s.findAll("button")
- for x in b:
-      print(xpath(x))
+    s = b.page_source
+    s = BeautifulSoup(s, "html.parser")
+    b = s.findAll("button")
+    for x in b:
+        print(xpath(x))
+
 
 def xpath(element):
     components = []
@@ -61,7 +62,7 @@ async def enter_details(email: str, password: str, browser):
     ).click()
     await asyncio.sleep(0.27)
     fb(browser)
-    return 
+    return
     browser.find_element_by_xpath(
         "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
     ).click()
