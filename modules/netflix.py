@@ -59,6 +59,6 @@ def setup_nf(email=""):
     browser = setup_browser()
     browser.get("https://netflix.com")
     if email != "":
-       enter_email(browser, email)
-       get_started()
+        enter_email(browser, email)
+        get_started()
     return browser
