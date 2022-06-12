@@ -19,7 +19,7 @@ def setup_browser(new=False):
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     b = webdriver.Chrome(chrome_options=chrome_options)
-    b.clear_cookies()
+    b.delete_all_cookies()
     return b
 
 
