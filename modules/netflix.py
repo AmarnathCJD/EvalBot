@@ -57,20 +57,29 @@ async def enter_details(email: str, password: str, browser):
     )
     EMAIL_TAG.clear()
     EMAIL_TAG.send_keys(email)
-    browser.find_element_by_xpath(
+    try:
+     browser.find_element_by_xpath(
         "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/div/button"
     ).click()
+    except:
+     pass
     await asyncio.sleep(0.27)
-    browser.find_element_by_xpath(
+    try:
+      browser.find_element_by_xpath(
         "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
     ).click()
+    except:
+      pass
     await asyncio.sleep(0.27)
-    PASSWORD_TAG = browser.find_element_by_xpath(
+    try:
+     PASSWORD_TAG = browser.find_element_by_xpath(
         "/html/body/div[1]/div/div/div[2]/div/form/div/div[1]/div[2]/ul/li[2]/div/div/label/input"
     )
-    PASSWORD_TAG.clear()
-    PASSWORD_TAG.send_keys(password)
-    PASSWORD_TAG.send_keys(Keys.ENTER)
+     PASSWORD_TAG.clear()
+     PASSWORD_TAG.send_keys(password)
+     PASSWORD_TAG.send_keys(Keys.ENTER)
+    except:
+      pass
     await asyncio.sleep(0.27)
 
 
