@@ -71,5 +71,5 @@ async def setup_netflix(e, email=""):
         enter_email(email, browser)
         get_started(browser)
         await asyncio.sleep(0.3)
-        click_next(browser)
+        # click_next(browser)
     await send_photo(b, e)
