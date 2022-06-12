@@ -5,7 +5,7 @@ CHROME_INSTANCES = []
 
 
 def browser(new=False):
-    if not new and len(CHROME) != 0:
+    if not new and len(CHROME_INSTANCES) != 0:
         return CHROME_INSTANCES[-1]
     chrome_options = Options()
     chrome_options.add_argument("--headless")
