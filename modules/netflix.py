@@ -54,12 +54,9 @@ def get_started(browser):
 
 
 def click_next(browser):
-    NXT = browser.find_element_by_xpath(
-        "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/div/button"
-    )
+    NXT = browser.find_element_by_xpath('/html/body/div[1]/div/div/div[2]/div/div[2]/button')
     if NXT:
         NXT.click()
-
 
 async def send_photo(browser, e):
     with io.BytesIO(base64.b64decode(browser.get_screenshot_as_base64())) as f:
@@ -73,6 +70,7 @@ async def setup_netflix(e, email=""):
     if email != "":
         enter_email(email, browser)
         get_started(browser)
-        await asyncio.sleep(0.28)
-        # click_next(browser)
+        await asyncio.sleep(0.27)
+        click_next(browser)
+        await asyncio.sleep(0.27)
     return browser
