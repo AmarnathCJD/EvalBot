@@ -41,3 +41,13 @@ def enter_email(email: str, browser):
     if EMAIL_TAG.get_attribute("value") != "":
         return True
     return False
+
+await def send_photo(browser, e):
+    with io.BytesIO(base64.b64decode(browser.get_screenshot_as_base64())) as f:
+         f.name = "screenshot.png"
+         await e.respond(file=f)
+
+def setup_nf():
+    browser = browser()
+    browser.get("https://netflix.com")
+    return browser
