@@ -38,6 +38,6 @@ def enter_email(email: str, browser):
     )
     EMAIL_TAG.clear()
     EMAIL_TAG.send_keys(email)
-    if EMAIL_TAG.get_attribute('value') != ""
+    if EMAIL_TAG.get_attribute('value') != "":
        return True
     return False
