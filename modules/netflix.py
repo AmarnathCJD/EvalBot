@@ -55,10 +55,10 @@ async def send_photo(browser, e):
         await e.respond(file=f)
 
 
-def setup_nf(email=""):
+def setup_netflix(email=""):
     browser = setup_browser()
     browser.get("https://netflix.com")
     if email != "":
-        enter_email(browser, email)
-        get_started()
+        enter_email(email, browser)
+        get_started(browser)
     return browser
