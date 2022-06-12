@@ -6,4 +6,3 @@ def browser():
     options.headless = True
     browser = webdriver.Chrome(options=options)
     return browser
-    
