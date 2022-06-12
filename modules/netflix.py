@@ -47,7 +47,7 @@ def xpath(element):
 
 
 def gen_email():
-    CHAR = string.ascii_letters + string.digits + string.punctuation
+    CHAR = string.ascii_letters
     return "".join(random.choice(CHAR) for a in range(10)) + "@gmail.com"
 
 
@@ -61,8 +61,6 @@ async def enter_details(email: str, password: str, browser):
         "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/div/button"
     ).click()
     await asyncio.sleep(0.27)
-    fb(browser)
-    return
     browser.find_element_by_xpath(
         "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
     ).click()
