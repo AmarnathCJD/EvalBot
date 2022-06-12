@@ -6,13 +6,13 @@ CHROME_INSTANCES = []
 
 def browser(new=False):
     if not new and len(CHROME) != 0:
-        return CHROME[-1]
+        return CHROME_INSTANCES[-1]
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     b = webdriver.Chrome(chrome_options=chrome_options)
-    CHROME.append(b)
+    CHROME_INSTANCES.append(b)
     return b
 
 
