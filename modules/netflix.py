@@ -83,7 +83,9 @@ async def enter_details(email: str, password: str, browser):
         pass
     await asyncio.sleep(1.27)
     try:
-        browser.find_element_by_xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/button").click()
+        browser.find_element_by_xpath(
+            "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
+        ).click()
     except:
         pass
     await asyncio.sleep(0.27)
