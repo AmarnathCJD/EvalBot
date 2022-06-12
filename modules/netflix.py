@@ -38,4 +38,8 @@ def enter_email(email: str, browser):
     )
     EMAIL_TAG.clear()
     EMAIL_TAG.send_keys(email)
-    return "SUCCESS! {}".format(EMAIL_TAG.text) if EMAIL_TAG.text != "" else "Failed to enter email."
+    return (
+        "SUCCESS! {}".format(EMAIL_TAG.text)
+        if EMAIL_TAG.text != ""
+        else "Failed to enter email."
+    )
