@@ -1,6 +1,6 @@
+import asyncio
 import base64
 import io
-import asyncio
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -49,10 +49,13 @@ def get_started(browser):
     if BTN:
         BTN.click()
 
+
 def click_next(browser):
-    NXT = browser.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/div/button')
+    NXT = browser.find_element_by_xpath(
+        "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/div/button"
+    )
     if NXT:
-       NXT.click()
+        NXT.click()
 
 
 async def send_photo(browser, e):
