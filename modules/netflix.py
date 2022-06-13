@@ -151,12 +151,15 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             f.write(base64.b64decode(browser.get_screenshot_as_base64()))
         verify = browser.find_element(By.CLASS_NAME, "stepTitle")
         if verify.text == "Verify your card.":
+            browser.quit()
             return False, "3D Secure Verification Failed"
+        browser.quit()    
         return True, "Success"
-    browser.find_element(By.CLASS_NAME, "messageContainer")
+    element = browser.find_element(By.CLASS_NAME, "messageContainer")
     with open("screenshot.png", "wb") as f:
         browser.set_window_size(1920, 1080)
         f.write(base64.b64decode(element.screenshot_as_base64.encode()))
+    browser.quit()
     return False, browser.find_element(By.CLASS_NAME, "messageContainer").text
 
 
