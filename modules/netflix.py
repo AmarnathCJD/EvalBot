@@ -125,7 +125,8 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/ul[1]/li[1]/div/div[1]/label/input",
     ).send_keys("Jenna Smith")
     browser.find_element(By.ID, "id_lastName").send_keys("Smith")
-    browser.find_element(By.ID, "id_creditCardNumber").send_keys(payload["cc_number"])
+    browser.find_element(By.ID, "id_creditCardNumber").send_keys(
+        payload["cc_number"])
     browser.find_element(By.ID, "id_creditExpirationMonth").send_keys(
         payload["cc_exp_date"]
     )
@@ -144,7 +145,8 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(100))
     try:
         wait.until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "messageContainer"))
+            EC.visibility_of_element_located(
+                (By.CLASS_NAME, "messageContainer"))
         )
     except TimeoutException:
         with open("screenshot.png", "wb") as f:
@@ -163,12 +165,6 @@ async def send_photo(browser, e):
     with io.BytesIO(base64.b64decode(browser.get_screenshot_as_base64())) as f:
         f.name = "screenshot.png"
         await e.respond(file=f)
-
-
-def show_screenshot(browser):
-    image = browser.get_screenshot_as_base64()
-    with open("screenshot.png", "wb") as f:
-        f.write(base64.b64decode(image))
 
 
 async def setup_netflix(payload: dict):
