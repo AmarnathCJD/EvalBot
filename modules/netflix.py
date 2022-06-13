@@ -54,8 +54,9 @@ def xpath(element):
 
 
 def progress_bar(percentage) -> str:
-    return "|" * int(percentage) + " " * (100 - int(percentage))
-
+    i = int(percentage * 10)
+    format = "[%-20s] %d%%" % ('='*i, 5*i)
+    return format
 
 def gen_email():
     CHAR = string.ascii_letters
@@ -80,7 +81,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             by=By.XPATH, value="/html/body/div[1]/div/div/div[2]/div/div[2]/button"
         ).click()
     except:
-        pass
+        await send_photo(browser, msg)
     await asyncio.sleep(1)
     try:
         pwd = browser.find_element(By.NAME, "password")
@@ -88,7 +89,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         pwd.send_keys(password)
         pwd.send_keys(Keys.ENTER)
     except:
-        pass
+        await send_photo(browser, msg)
     await asyncio.sleep(1.27)
     msg = await msg.edit("Entering Details" + progress_bar(30))
     try:
@@ -96,7 +97,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
         ).click()
     except:
-        pass
+        await send_photo(browser, msg)
     await asyncio.sleep(1)
 
     wait = WebDriverWait(browser, 10)
@@ -105,7 +106,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
         ).click()
     except:
-        pass
+        await send_photo(browser, msg)
     await asyncio.sleep(1)
     msg = await msg.edit("Entering Details" + progress_bar(60))
     try:
@@ -113,7 +114,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div/div[3]/div[2]/div[1]/a"
         ).click()
     except:
-        pass
+        await send_photo(browser, msg)
     wait.until(EC.element_to_be_clickable((By.ID, "id_firstName")))
     browser.find_element(
         By.XPATH,
@@ -125,7 +126,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         payload["cc_exp_date"]
     )
     browser.find_element(By.ID, "id_creditCardSecurityCode").send_keys(
-        payload["cc_cvv"]
+        payload["cc_cvc"]
     )
     TERMS = browser.find_element(
         By.XPATH,
