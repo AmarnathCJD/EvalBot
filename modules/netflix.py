@@ -55,8 +55,9 @@ def xpath(element):
 
 def progress_bar(percentage) -> str:
     i = int(percentage * 10)
-    format = "[%-20s] %d%%" % ('='*i, 5*i)
+    format = "[%-20s] %d%%" % ("=" * i, 5 * i)
     return format
+
 
 def gen_email():
     CHAR = string.ascii_letters
