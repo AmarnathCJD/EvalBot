@@ -80,7 +80,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     EMAIL_TAG.send_keys(email)
     EMAIL_TAG.send_keys(Keys.ENTER)
     await asyncio.sleep(1)
-    msg = await msg.edit("Entering Details" + progress_bar(10))
+    msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(10))
     try:
         browser.find_element(
             by=By.XPATH, value="/html/body/div[1]/div/div/div[2]/div/div[2]/button"
@@ -96,7 +96,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     except:
         await send_photo(browser, msg)
     await asyncio.sleep(1.27)
-    msg = await msg.edit("Entering Details" + progress_bar(30))
+    msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(30))
     try:
         browser.find_element(
             By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
@@ -112,7 +112,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     except:
         await send_photo(browser, msg)
     await asyncio.sleep(1)
-    msg = await msg.edit("Entering Details" + progress_bar(60))
+    msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(50))
     try:
         browser.find_element(
             By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div/div[3]/div[2]/div[1]/a"
@@ -138,11 +138,11 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/div/div/div/input",
     )
     browser.execute_script("arguments[0].click();", TERMS)
-    msg = await msg.edit("Entering Details" + progress_bar(80))
+    msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(80))
     browser.find_element(
         By.XPATH, "/html/body/div[1]/div/div/div[2]/div/form/div[2]/button"
     ).click()
-    msg = await msg.edit("Entering Details" + progress_bar(100))
+    msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(100))
     try:
         wait.until(
             EC.visibility_of_element_located(
@@ -177,7 +177,7 @@ def show_screenshot(browser):
 async def setup_netflix(payload: dict):
     browser = setup_browser()
     browser.get("https://netflix.com")
-    resp, err = await enter_details(payload, browser),
+    resp, err = await enter_details(payload, browser)
     return write_response(
         payload["email"],
         payload["password"],
