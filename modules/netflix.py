@@ -151,15 +151,12 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             f.write(base64.b64decode(browser.get_screenshot_as_base64()))
         verify = browser.find_element(By.CLASS_NAME, "stepTitle")
         if verify.text == "Verify your card.":
-            browser.quit()
             return False, "3D Secure Verification Failed"
-        browser.quit()    
         return True, "Success"
     element = browser.find_element(By.CLASS_NAME, "messageContainer")
     with open("screenshot.png", "wb") as f:
         browser.set_window_size(1920, 1080)
         f.write(base64.b64decode(element.screenshot_as_base64.encode()))
-    browser.quit()
     return False, browser.find_element(By.CLASS_NAME, "messageContainer").text
 
 
@@ -173,23 +170,23 @@ async def setup_netflix(payload: dict):
     browser = setup_browser()
     browser.get("https://netflix.com")
     resp, err = await enter_details(payload, browser)
+    browser.quit()
     return write_response(
         payload["email"],
         payload["password"],
         resp,
         err,
-        browser,
     )
 
 
-def write_response(email, password, resp: bool, err, browser: webdriver.Chrome):
+def write_response(email, password, resp: bool, err):
     if resp:
         RESULT = "**Netflix**\n\n**Email:** `{}`\n**Password:** `{}`\n**Status:** `Success`".format(
             email, password
         )
     else:
         RESULT = "**Netflix account creation failed**"
-        RESULT += "\nError: `" + err + "`"
+        RESULT += "\nError: __**" + err + "**__"
     return RESULT, resp
 
 
