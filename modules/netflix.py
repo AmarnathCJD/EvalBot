@@ -60,7 +60,7 @@ def progress_bar(percentage) -> str:
 
 
 def gen_email():
-    CHAR = string.ascii_lettersop
+    CHAR = string.ascii_letters
     return "".join(random.choice(CHAR) for a in range(10)) + "@gmail.com"
 
 
