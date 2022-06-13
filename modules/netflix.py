@@ -192,8 +192,10 @@ async def _nfgen(e):
     msg = await e.respond("🔄 Generating Netflix account...")
     args = e.text.split(" ")
     if len(args) == 1:
-        return await msg.edit("Enter CC Details in the format: `!netflix <email>|<password>|<cc_number>|<cc_exp_date>|<cc_cvc>`")
-    args = ''.join(args[1:]).split("|")
+        return await msg.edit(
+            "Enter CC Details in the format: `!netflix <email>|<password>|<cc_number>|<cc_exp_date>|<cc_cvc>`"
+        )
+    args = "".join(args[1:]).split("|")
     if len(args) == 4:
         cc_number, cc_exp_month, cc_exp_year, cc_cvc = args
         cc_exp_date = cc_exp_month + "/" + cc_exp_year
