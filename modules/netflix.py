@@ -153,7 +153,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         if verify.text == "Verify your card.":
             return False, "3D Secure Verification Failed"
         return True, "Success"
-    element = browser.find_element(By.CLASS_NAME, "messageContainer")
+    browser.find_element(By.CLASS_NAME, "messageContainer")
     with open("screenshot.png", "wb") as f:
         # f.write(base64.b64decode(element.screenshot_as_base64.encode()))
         f.write(base64.b64decode(browser.get_screenshot_as_base64()))
