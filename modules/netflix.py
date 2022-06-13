@@ -60,7 +60,7 @@ def progress_bar(percentage: int) -> str:
         "".join(["▱" for i in range(10 - math.floor(percentage / 10))]),
         round(percentage, 2),
     )
-    return '\n' + progress_str
+    return "\n" + progress_str
 
 
 def gen_email():
@@ -125,8 +125,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/ul[1]/li[1]/div/div[1]/label/input",
     ).send_keys("Jenna Smith")
     browser.find_element(By.ID, "id_lastName").send_keys("Smith")
-    browser.find_element(By.ID, "id_creditCardNumber").send_keys(
-        payload["cc_number"])
+    browser.find_element(By.ID, "id_creditCardNumber").send_keys(payload["cc_number"])
     browser.find_element(By.ID, "id_creditExpirationMonth").send_keys(
         payload["cc_exp_date"]
     )
@@ -145,14 +144,12 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(100))
     try:
         wait.until(
-            EC.visibility_of_element_located(
-                (By.CLASS_NAME, "messageContainer"))
+            EC.visibility_of_element_located((By.CLASS_NAME, "messageContainer"))
         )
     except TimeoutException:
         with open("screenshot.png", "wb") as f:
             f.write(base64.b64decode(browser.get_screenshot_as_base64()))
-        verify = browser.find_element(
-            By.CLASS_NAME, "stepTitle")
+        verify = browser.find_element(By.CLASS_NAME, "stepTitle")
         if verify.text == "Verify your card.":
             return False, "3D Secure Verification Failed"
         return True, "Success"
@@ -194,9 +191,7 @@ def write_response(email, password, resp: bool, err, browser: webdriver.Chrome):
         )
     else:
         RESULT = "**Netflix account creation failed**"
-        RESULT += (
-            '\nError: `' + err + '`'
-        )
+        RESULT += "\nError: `" + err + "`"
     return RESULT, resp
 
 
