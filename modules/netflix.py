@@ -166,7 +166,6 @@ async def send_photo(browser, e, txt):
     with io.BytesIO(base64.b64decode(browser.get_screenshot_as_base64())) as f:
         f.name = "screenshot.png"
         await e.respond(txt, file=f)
-ok
 
 async def setup_netflix(payload: dict):
     browser = setup_browser()
