@@ -54,13 +54,13 @@ def xpath(element):
 
 
 def progress_bar(percentage) -> str:
-    i = int(percentage * (1 / 10))
+    i = int(percentage)
     format = "[%-20s] %d%%" % ("=" * i, 5 * i)
     return format
 
 
 def gen_email():
-    CHAR = string.ascii_letters
+    CHAR = string.ascii_lettersop
     return "".join(random.choice(CHAR) for a in range(10)) + "@gmail.com"
 
 
@@ -145,7 +145,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         )
     except TimeoutException:
         with open("screenshot.png", "wb") as f:
-            f.write(base64.b64decode(element.screenshot_as_base64.encode()))
+            f.write(base64.b64decode(browser.get_screenshot_as_base64()))
         return True
     element = browser.find_element(By.CLASS_NAME, "messageContainer")
     with open("screenshot.png", "wb") as f:
