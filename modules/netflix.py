@@ -144,6 +144,8 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             EC.visibility_of_element_located((By.CLASS_NAME, "messageContainer"))
         )
     except TimeoutException:
+        with open("screenshot.png", "wb") as f:
+            f.write(base64.b64decode(element.screenshot_as_base64.encode()))
         return True
     element = browser.find_element(By.CLASS_NAME, "messageContainer")
     with open("screenshot.png", "wb") as f:
