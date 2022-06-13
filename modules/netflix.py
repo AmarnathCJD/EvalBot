@@ -17,6 +17,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from modules.helpers import command
 
+safety_check = []
+
 
 def setup_browser():
     chrome_options = Options()
@@ -125,7 +127,8 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/ul[1]/li[1]/div/div[1]/label/input",
     ).send_keys("Jenna Smith")
     browser.find_element(By.ID, "id_lastName").send_keys("Smith")
-    browser.find_element(By.ID, "id_creditCardNumber").send_keys(payload["cc_number"])
+    browser.find_element(By.ID, "id_creditCardNumber").send_keys(
+        payload["cc_number"])
     browser.find_element(By.ID, "id_creditExpirationMonth").send_keys(
         payload["cc_exp_date"]
     )
@@ -144,7 +147,8 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(100))
     try:
         wait.until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "messageContainer"))
+            EC.visibility_of_element_located(
+                (By.CLASS_NAME, "messageContainer"))
         )
     except TimeoutException:
         with open("screenshot.png", "wb") as f:
@@ -168,7 +172,7 @@ async def send_photo(browser, e):
 
 async def setup_netflix(payload: dict):
     browser = setup_browser()
-    browser.get("https://netflix.com") 
+    browser.get("https://netflix.com")
     resp, err = await enter_details(payload, browser)
     browser.quit()
     return write_response(
@@ -192,6 +196,9 @@ def write_response(email, password, resp: bool, err):
 
 @command(pattern="netflix")
 async def _nfgen(e):
+    if e.sender_id in safety_check:
+        return await e.reply("Please wait for the current operation to finish.")
+    safety_check.append(e.sender_id)
     msg = await e.respond("🔄 Generating Netflix account...")
     args = e.text.split(" ")
     if len(args) == 1:
@@ -229,3 +236,4 @@ async def _nfgen(e):
     else:
         await msg.delete()
         await e.respond(txt)
+    safety_check.remove(e.sender_id)    
