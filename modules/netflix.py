@@ -1,21 +1,18 @@
 import asyncio
 import base64
-import email
 import io
-from msilib.schema import File
 import os
 import random
 import string
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import selenium
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from modules.helpers import command
 
@@ -69,9 +66,10 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     email = payload["email"]
     password = payload["password"]
     msg = payload["msg"]
-    EMAIL_TAG = browser.find_element(By.XPATH,
-                                     "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/ul/li/div/div/label/input"
-                                     )
+    EMAIL_TAG = browser.find_element(
+        By.XPATH,
+        "/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div[2]/form/div/ul/li/div/div/label/input",
+    )
     EMAIL_TAG.clear()
     EMAIL_TAG.send_keys(email)
     EMAIL_TAG.send_keys(Keys.ENTER)
@@ -79,7 +77,8 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     msg = await msg.edit("Entering Details" + progress_bar(10))
     try:
         browser.find_element(
-            by=By.XPATH, value="/html/body/div[1]/div/div/div[2]/div/div[2]/button").click()
+            by=By.XPATH, value="/html/body/div[1]/div/div/div[2]/div/div[2]/button"
+        ).click()
     except:
         pass
     await asyncio.sleep(1)
@@ -93,9 +92,9 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     await asyncio.sleep(1.27)
     msg = await msg.edit("Entering Details" + progress_bar(30))
     try:
-        browser.find_element(By.XPATH,
-                             "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
-                             ).click()
+        browser.find_element(
+            By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
+        ).click()
     except:
         pass
     await asyncio.sleep(1)
@@ -103,36 +102,45 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     wait = WebDriverWait(browser, 10)
     try:
         browser.find_element(
-            By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[2]/button").click()
+            By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
+        ).click()
     except:
         pass
     await asyncio.sleep(1)
     msg = await msg.edit("Entering Details" + progress_bar(60))
     try:
         browser.find_element(
-            By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div/div[3]/div[2]/div[1]/a").click()
+            By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div/div[3]/div[2]/div[1]/a"
+        ).click()
     except:
         pass
     wait.until(EC.element_to_be_clickable((By.ID, "id_firstName")))
     browser.find_element(
-        By.XPATH, "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/ul[1]/li[1]/div/div[1]/label/input").send_keys("Jenna Smith")
+        By.XPATH,
+        "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/ul[1]/li[1]/div/div[1]/label/input",
+    ).send_keys("Jenna Smith")
     browser.find_element(By.ID, "id_lastName").send_keys("Smith")
-    browser.find_element(By.ID, "id_creditCardNumber").send_keys(
-        payload["cc_number"])
+    browser.find_element(By.ID, "id_creditCardNumber").send_keys(payload["cc_number"])
     browser.find_element(By.ID, "id_creditExpirationMonth").send_keys(
-        payload["cc_exp_date"])
+        payload["cc_exp_date"]
+    )
     browser.find_element(By.ID, "id_creditCardSecurityCode").send_keys(
-        payload["cc_cvv"])
+        payload["cc_cvv"]
+    )
     TERMS = browser.find_element(
-        By.XPATH, "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/div/div/div/input")
+        By.XPATH,
+        "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/div/div/div/input",
+    )
     browser.execute_script("arguments[0].click();", TERMS)
     msg = await msg.edit("Entering Details" + progress_bar(80))
     browser.find_element(
-        By.XPATH, "/html/body/div[1]/div/div/div[2]/div/form/div[2]/button").click()
+        By.XPATH, "/html/body/div[1]/div/div/div[2]/div/form/div[2]/button"
+    ).click()
     msg = await msg.edit("Entering Details" + progress_bar(100))
     try:
-        wait.until(EC.visibility_of_element_located(
-            (By.CLASS_NAME, "messageContainer")))
+        wait.until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "messageContainer"))
+        )
     except TimeoutException:
         return True
     element = browser.find_element(By.CLASS_NAME, "messageContainer")
@@ -156,7 +164,12 @@ def show_screenshot(browser):
 async def setup_netflix(payload: dict):
     browser = setup_browser()
     browser.get("https://netflix.com")
-    return write_response(payload["email"], payload["password"], await enter_details(payload, browser), browser)
+    return write_response(
+        payload["email"],
+        payload["password"],
+        await enter_details(payload, browser),
+        browser,
+    )
 
 
 def write_response(email, password, resp: bool, browser: webdriver.Chrome):
@@ -166,8 +179,11 @@ def write_response(email, password, resp: bool, browser: webdriver.Chrome):
         RESULT += "\nPassword: " + password
     else:
         RESULT = "Netflix account creation failed"
-        RESULT += '\nError: "' + \
-            browser.find_element(By.CLASS_NAME, "messageContainer").text + '"'
+        RESULT += (
+            '\nError: "'
+            + browser.find_element(By.CLASS_NAME, "messageContainer").text
+            + '"'
+        )
     return RESULT, resp
 
 
@@ -176,7 +192,9 @@ async def _nfgen(e):
     msg = await e.respond("🔄 Generating Netflix account...")
     args = e.text.split(" ")
     if len(args) == 1:
-        return await msg.edit("Enter CC Details in the format: `!netflix <email>|<password>|<cc_number>|<cc_exp_date>|<cc_cvc>`")
+        return await msg.edit(
+            "Enter CC Details in the format: `!netflix <email>|<password>|<cc_number>|<cc_exp_date>|<cc_cvc>`"
+        )
     args = args[1:].split("|")
     if len(args) == 4:
         cc_number, cc_exp_month, cc_exp_year, cc_cvc = args
@@ -187,7 +205,7 @@ async def _nfgen(e):
             "cc_number": cc_number,
             "cc_exp_date": cc_exp_date,
             "cc_cvc": cc_cvc,
-            "msg": msg
+            "msg": msg,
         }
         txt, _ = await setup_netflix(payload)
     elif len(args) == 6:
@@ -199,7 +217,7 @@ async def _nfgen(e):
             "cc_number": cc_number,
             "cc_exp_date": cc_exp_date,
             "cc_cvc": cc_cvc,
-            "msg": msg
+            "msg": msg,
         }
         txt, _ = await setup_netflix(payload)
     if os.path.exists("screenshot.png"):
