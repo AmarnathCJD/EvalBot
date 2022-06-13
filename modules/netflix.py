@@ -88,7 +88,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             by=By.XPATH, value="/html/body/div[1]/div/div/div[2]/div/div[2]/button"
         ).click()
     except:
-        await send_photo(browser, msg)
+        return await send_photo(browser, msg, "Error: __**Could not find the button**__")
     await asyncio.sleep(1)
     try:
         pwd = browser.find_element(By.NAME, "password")
@@ -96,7 +96,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         pwd.send_keys(password)
         pwd.send_keys(Keys.ENTER)
     except:
-        await send_photo(browser, msg)
+        return await send_photo(browser, msg, "Error: __**Could not find the button**__")
     await asyncio.sleep(1.27)
     msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(30))
     try:
@@ -104,7 +104,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
         ).click()
     except:
-        await send_photo(browser, msg)
+        return await send_photo(browser, msg, "Error: __**Could not find the button**__")
     await asyncio.sleep(1)
     wait = WebDriverWait(browser, 10)
     try:
@@ -112,7 +112,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[2]/button"
         ).click()
     except:
-        await send_photo(browser, msg)
+        return await send_photo(browser, msg, "Error: __**Could not find the button**__")
     await asyncio.sleep(1)
     msg = await msg.edit("Generating Account...\nPlease wait..." + progress_bar(50))
     try:
@@ -120,7 +120,7 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
             By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div/div[3]/div[2]/div[1]/a"
         ).click()
     except:
-        await send_photo(browser, msg)
+        return await send_photo(browser, msg, "Error: __**Could not find the button**__")
     wait.until(EC.element_to_be_clickable((By.ID, "id_firstName")))
     browser.find_element(
         By.XPATH,
@@ -164,11 +164,11 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     return False, browser.find_element(By.CLASS_NAME, "messageContainer").text
 
 
-async def send_photo(browser, e):
+async def send_photo(browser, e, txt):
     with io.BytesIO(base64.b64decode(browser.get_screenshot_as_base64())) as f:
         f.name = "screenshot.png"
-        await e.respond(file=f)
-
+        await e.respond(txt, file=f)
+ok
 
 async def setup_netflix(payload: dict):
     browser = setup_browser()
@@ -236,4 +236,4 @@ async def _nfgen(e):
     else:
         await msg.delete()
         await e.respond(txt)
-    safety_check.remove(e.sender_id)    
+    safety_check.remove(e.sender_id)
