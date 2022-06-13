@@ -1,6 +1,7 @@
 import asyncio
 import base64
 import io
+import math
 import os
 import random
 import string
@@ -53,10 +54,13 @@ def xpath(element):
     return "/%s" % "/".join(components)
 
 
-def progress_bar(percentage) -> str:
-    i = int(percentage)
-    format = "[%-20s] %d%%" % ("=" * i, 5 * i)
-    return format
+def progress_bar(percentage: int) -> str:
+    progress_str = "[{0}{1}] {2}%\n".format(
+        "".join(["▰" for i in range(math.floor(percentage / 10))]),
+        "".join(["▱" for i in range(10 - math.floor(percentage / 10))]),
+        round(percentage, 2),
+    )
+    return '\n' + progress_str
 
 
 def gen_email():
@@ -100,7 +104,6 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     except:
         await send_photo(browser, msg)
     await asyncio.sleep(1)
-
     wait = WebDriverWait(browser, 10)
     try:
         browser.find_element(
@@ -122,7 +125,8 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         "/html/body/div[1]/div/div/div[2]/div/form/div[1]/div[2]/ul[1]/li[1]/div/div[1]/label/input",
     ).send_keys("Jenna Smith")
     browser.find_element(By.ID, "id_lastName").send_keys("Smith")
-    browser.find_element(By.ID, "id_creditCardNumber").send_keys(payload["cc_number"])
+    browser.find_element(By.ID, "id_creditCardNumber").send_keys(
+        payload["cc_number"])
     browser.find_element(By.ID, "id_creditExpirationMonth").send_keys(
         payload["cc_exp_date"]
     )
@@ -141,16 +145,21 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
     msg = await msg.edit("Entering Details" + progress_bar(100))
     try:
         wait.until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "messageContainer"))
+            EC.visibility_of_element_located(
+                (By.CLASS_NAME, "messageContainer"))
         )
     except TimeoutException:
         with open("screenshot.png", "wb") as f:
             f.write(base64.b64decode(browser.get_screenshot_as_base64()))
-        return True
+        verify = browser.find_element(
+            By.CLASS_NAME, "stepTitle")
+        if verify.text == "Verify your card.":
+            return False, "3D Secure Verification Failed"
+        return True, "Success"
     element = browser.find_element(By.CLASS_NAME, "messageContainer")
     with open("screenshot.png", "wb") as f:
         f.write(base64.b64decode(element.screenshot_as_base64.encode()))
-    return False
+    return False, browser.find_element(By.CLASS_NAME, "messageContainer").text
 
 
 async def send_photo(browser, e):
@@ -168,25 +177,25 @@ def show_screenshot(browser):
 async def setup_netflix(payload: dict):
     browser = setup_browser()
     browser.get("https://netflix.com")
+    resp, err = await enter_details(payload, browser),
     return write_response(
         payload["email"],
         payload["password"],
-        await enter_details(payload, browser),
+        resp,
+        err,
         browser,
     )
 
 
-def write_response(email, password, resp: bool, browser: webdriver.Chrome):
+def write_response(email, password, resp: bool, err, browser: webdriver.Chrome):
     if resp:
-        RESULT = "Netflix account created successfully"
-        RESULT += "\nEmail: " + email
-        RESULT += "\nPassword: " + password
+        RESULT = "**Netflix**\n\n**Email:** `{}`\n**Password:** `{}`\n**Status:** `Success`".format(
+            email, password
+        )
     else:
-        RESULT = "Netflix account creation failed"
+        RESULT = "**Netflix account creation failed**"
         RESULT += (
-            '\nError: "'
-            + browser.find_element(By.CLASS_NAME, "messageContainer").text
-            + '"'
+            '\nError: `' + err + '`'
         )
     return RESULT, resp
 
