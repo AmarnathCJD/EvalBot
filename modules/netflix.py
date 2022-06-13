@@ -54,7 +54,7 @@ def xpath(element):
 
 
 def progress_bar(percentage) -> str:
-    i = int(percentage * 10)
+    i = int(percentage * (1/100))
     format = "[%-20s] %d%%" % ('='*i, 5*i)
     return format
 
