@@ -168,7 +168,7 @@ async def send_photo(browser, e):
 
 async def setup_netflix(payload: dict):
     browser = setup_browser()
-    browser.get("https://netflix.com")
+    browser.get("https://netflix.com") 
     resp, err = await enter_details(payload, browser)
     browser.quit()
     return write_response(
