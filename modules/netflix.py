@@ -155,8 +155,8 @@ async def enter_details(payload: dict, browser: webdriver.Chrome):
         return True, "Success"
     element = browser.find_element(By.CLASS_NAME, "messageContainer")
     with open("screenshot.png", "wb") as f:
-        # f.write(base64.b64decode(element.screenshot_as_base64.encode()))
-        f.write(base64.b64decode(browser.get_screenshot_as_base64()))
+        browser.set_window_size(1920, 1080)
+        f.write(base64.b64decode(element.screenshot_as_base64.encode()))
     return False, browser.find_element(By.CLASS_NAME, "messageContainer").text
 
 
