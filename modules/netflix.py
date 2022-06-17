@@ -5,8 +5,9 @@ import math
 import os
 import random
 import string
-from requests import post
+
 from bs4 import BeautifulSoup
+from requests import post
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
@@ -14,7 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import io
+
 from modules.helpers import command
 
 safety_check = []
@@ -249,28 +250,30 @@ async def _nfgen(e):
 
 SPOTIFY_API = "https://spclient.wg.spotify.com:443/signup/public/v1/account/"
 
+
 @command(pattern="spotify")
 async def _spotify_gen(e):
- try:
-   email = e.text.split(None, maxsplit=1)[1]
- except IndexError:
-   email = gen_email()
- data = {"iagree":True, 
-"birth_day":"17",
-"platform":"Android-ARM",
-"creation_point":"client_mobile",
-"password":"Qwerty123#",
-"key":"142b583129b2df829de3656f9eb484e6",
-"birth_year":"2000",
-"email":email,
-"gender":"male",
-"app_version":"849800892",
-"birth_month":"12",
-"password_repeat":"Qwerty123#"}
- r = post(SPOTIFY_API, data=data).json()
- if len(str(r)) > 4095:
-    with io.BytesIO(str(r).encode()) as f:
-         f.name ="resp.txt"
-         await e.respond(file=f)
- await e.reply(str(r))
- 
+    try:
+        email = e.text.split(None, maxsplit=1)[1]
+    except IndexError:
+        email = gen_email()
+    data = {
+        "iagree": True,
+        "birth_day": "17",
+        "platform": "Android-ARM",
+        "creation_point": "client_mobile",
+        "password": "Qwerty123#",
+        "key": "142b583129b2df829de3656f9eb484e6",
+        "birth_year": "2000",
+        "email": email,
+        "gender": "male",
+        "app_version": "849800892",
+        "birth_month": "12",
+        "password_repeat": "Qwerty123#",
+    }
+    r = post(SPOTIFY_API, data=data).json()
+    if len(str(r)) > 4095:
+        with io.BytesIO(str(r).encode()) as f:
+            f.name = "resp.txt"
+            await e.respond(file=f)
+    await e.reply(str(r))
