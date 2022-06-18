@@ -2,10 +2,11 @@ import asyncio
 import io
 import sys
 import traceback
-from telethon import events
-from .config import bot
-import requests
 
+import requests
+from telethon import events
+
+from .config import bot
 from .helpers import ERRORS, auth, command, get_user
 
 
