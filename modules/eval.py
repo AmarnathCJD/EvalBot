@@ -6,7 +6,7 @@ import traceback
 import requests
 from telethon import events
 
-from .config import bot
+from ._config import bot
 from .helpers import ERRORS, auth, command, get_user
 
 
