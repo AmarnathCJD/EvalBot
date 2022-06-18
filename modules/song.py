@@ -155,7 +155,7 @@ async def _compress_vid(e):
         return
     vd = await v.download_media()
     t = time.time()
-    cmd = f"ffmpeg -i {vd} -c:v libx265 -vtag hvc1 compressed-{vd}"
+    cmd = f"ffmpeg -i {vd} -c:v libx265 -preset medium -x265-params crf=28 -c:a aac -strict experimental -b:a 128k compressed-{vd}"
     await bash(cmd)
     size = os.stat(f"compressed-{vd}").st_size
     comp_size = sizeof_fmt(size)
