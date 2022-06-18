@@ -2,13 +2,15 @@ import asyncio
 import io
 import sys
 import traceback
-
+from telethon import events
+from .config import bot
 import requests
 
 from .helpers import ERRORS, auth, command, get_user
 
 
 @command(pattern="eval")
+@bot.on(events.MessageEdited(pattern="^(?i)[!?.]eval (.*?)"))
 @auth
 async def _eval(e):
     try:
